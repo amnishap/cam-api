@@ -1161,6 +1161,7 @@
         <div class="expiry">Expires ${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
         <div class="status-row">${statusBadge}${lockBadge}</div>
         <div class="tile-actions">
+          ${card.status === 'PENDING_ACTIVATION' ? `<button class="btn btn-sm btn-accent" onclick="cardAction('${card.id}', 'activate', '${accountId}')">✓ Activate</button>` : ''}
           <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}', 'lock',   '${accountId}')">🔒 Lock</button>
           <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}', 'unlock', '${accountId}')">🔓 Unlock</button>
           ${!isClosed ? `<button class="btn btn-sm btn-limits" onclick="toggleCardLimits('${card.id}')">⚙ Limits</button>` : ''}
