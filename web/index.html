@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CAM — Card & Account Management</title>
+  <title>CAM — Card &amp; Account Management</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -62,7 +62,7 @@
     }
 
     /* ─── Layout ─── */
-    main { max-width: 860px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    main { max-width: 900px; margin: 2.5rem auto; padding: 0 1.5rem; }
 
     .page { display: none; }
     .page.active { display: block; }
@@ -76,6 +76,13 @@
       margin-bottom: 1.5rem;
     }
     .panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--brand); }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .panel-header h2 { margin-bottom: 0; }
 
     /* ─── Form ─── */
     .form-grid {
@@ -150,6 +157,8 @@
     .btn-lock   { background: #fff3e0; color: #b45309; border: 1.5px solid #fbbf24; }
     .btn-unlock { background: #ecfdf5; color: #065f46; border: 1.5px solid #34d399; }
     .btn-danger { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+    .btn-save   { background: var(--green); color: #fff; }
+    .btn-limits { background: #f0f4ff; color: var(--brand); border: 1.5px solid #c7d3f5; }
 
     .form-actions { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: .75rem; }
 
@@ -201,7 +210,7 @@
     .success-card .chip { display: inline-flex; align-items: center; gap: .3rem; background: rgba(255,255,255,.15); border-radius: 6px; padding: .25rem .6rem; font-size: .75rem; font-weight: 600; margin-top: .75rem; }
 
     /* ─── Card tiles ─── */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
 
     .card-tile {
       background: var(--card-bg);
@@ -240,6 +249,117 @@
     .badge-unlocked   { background: #ecfdf5; color: #065f46; }
 
     .tile-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+    /* ─── Limits drawer on card tile ─── */
+    .limits-drawer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1.5px solid var(--border);
+      display: none;
+    }
+    .limits-drawer.open { display: block; }
+    .limits-drawer h4 {
+      font-size: .75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .4px; color: var(--text-lt); margin-bottom: .75rem;
+    }
+
+    .limit-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .6rem;
+    }
+    .limit-row label {
+      font-size: .75rem;
+      min-width: 110px;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .limit-row input {
+      flex: 1;
+      padding: .4rem .6rem;
+      font-size: .85rem;
+      border-radius: 6px;
+    }
+    .limit-row .limit-unit {
+      font-size: .75rem;
+      color: var(--text-lt);
+      min-width: 28px;
+    }
+
+    .limit-highlight {
+      background: linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%);
+      border: 1.5px solid #fbbf24;
+      border-radius: 8px;
+      padding: .6rem .75rem;
+      margin-bottom: .75rem;
+    }
+    .limit-highlight .highlight-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: #92400e;
+      margin-bottom: .5rem;
+    }
+
+    .drawer-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: .75rem;
+      align-items: center;
+    }
+    .drawer-alert {
+      font-size: .78rem;
+      border-radius: 6px;
+      padding: .35rem .6rem;
+      display: none;
+      flex: 1;
+    }
+    .drawer-alert.visible { display: block; }
+    .drawer-alert.success { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+    .drawer-alert.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ─── Account limits panel ─── */
+    .acct-limits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) { .acct-limits-grid { grid-template-columns: 1fr; } }
+
+    .acct-limit-card {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .acct-limit-card .alc-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--text-lt);
+      margin-bottom: .5rem;
+    }
+    .acct-limit-card.monthly-card {
+      border-color: #fbbf24;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%);
+    }
+    .acct-limit-card.monthly-card .alc-title { color: #92400e; }
+
+    .acct-limit-card input {
+      font-size: .9rem;
+      padding: .45rem .65rem;
+    }
+    .acct-limit-card .alc-hint {
+      font-size: .7rem;
+      color: var(--text-lt);
+      margin-top: .3rem;
+    }
 
     /* ─── Lookup ─── */
     .lookup-row { display: flex; gap: .75rem; align-items: flex-end; }
@@ -436,6 +556,7 @@
   <!-- ══════════════ MANAGE PAGE ══════════════ -->
   <div id="page-manage" class="page">
 
+    <!-- Lookup -->
     <div class="panel">
       <h2>My Cards</h2>
 
@@ -450,6 +571,10 @@
       <div id="manageAlert" class="alert" style="margin-top:.75rem"></div>
     </div>
 
+    <!-- Account-level spending limits (rendered dynamically) -->
+    <div id="accountLimitsContainer"></div>
+
+    <!-- Cards grid (rendered dynamically) -->
     <div id="cardsContainer"></div>
 
   </div>
@@ -481,6 +606,16 @@
   }
 
   /* ════════════════════════════════════════
+     Helpers — cents ↔ dollars
+  ═════════════════════════════════════════ */
+  const toDollars = cents => cents == null ? '' : (cents / 100).toFixed(2);
+  const toCents   = dollars => {
+    const n = parseFloat(dollars);
+    return isNaN(n) || dollars === '' ? null : Math.round(n * 100);
+  };
+  const fmtDollars = cents => cents == null ? '—' : `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+  /* ════════════════════════════════════════
      Page routing
   ═════════════════════════════════════════ */
   function showPage(name, btn) {
@@ -502,14 +637,12 @@
     document.getElementById(`applyStep${currentStep}`).style.display = 'none';
     document.getElementById(`applyStep${step}`).style.display = 'block';
 
-    // Update step indicators
     for (let i = 1; i <= 4; i++) {
       const el = document.getElementById(`step${i}`);
       el.classList.remove('active', 'done');
       if (i < step) el.classList.add('done');
       if (i === step) el.classList.add('active');
     }
-    // Replace number with ✓ for done steps
     document.querySelectorAll('.step.done .step-dot').forEach(d => { if (!d.textContent.includes('✓')) d.textContent = '✓'; });
     currentStep = step;
   }
@@ -564,17 +697,17 @@
     clearAlert('applyAlert');
 
     try {
-      const firstName   = document.getElementById('firstName').value.trim();
-      const lastName    = document.getElementById('lastName').value.trim();
-      const email       = document.getElementById('email').value.trim();
-      const dob         = document.getElementById('dob').value;
-      const phone       = document.getElementById('phone').value.trim();
-      const addressLine1= document.getElementById('addressLine1').value.trim();
-      const addressLine2= document.getElementById('addressLine2').value.trim();
-      const city        = document.getElementById('city').value.trim();
-      const state       = document.getElementById('state').value.trim();
-      const postalCode  = document.getElementById('postalCode').value.trim();
-      const country     = (document.getElementById('country').value.trim() || 'US').toUpperCase().slice(0,2);
+      const firstName    = document.getElementById('firstName').value.trim();
+      const lastName     = document.getElementById('lastName').value.trim();
+      const email        = document.getElementById('email').value.trim();
+      const dob          = document.getElementById('dob').value;
+      const phone        = document.getElementById('phone').value.trim();
+      const addressLine1 = document.getElementById('addressLine1').value.trim();
+      const addressLine2 = document.getElementById('addressLine2').value.trim();
+      const city         = document.getElementById('city').value.trim();
+      const state        = document.getElementById('state').value.trim();
+      const postalCode   = document.getElementById('postalCode').value.trim();
+      const country      = (document.getElementById('country').value.trim() || 'US').toUpperCase().slice(0,2);
 
       /* Step 1: Create account */
       const accountBody = {
@@ -653,8 +786,8 @@
   });
 
   function renderSuccessCard(card, account) {
-    const lockBadge = card.isLocked ? '🔒 Locked' : '🔓 Unlocked';
-    const statusClass = card.status === 'ACTIVE' ? '✅ Active' : '⏳ Pending Activation';
+    const lockBadge    = card.isLocked ? '🔒 Locked' : '🔓 Unlocked';
+    const statusClass  = card.status === 'ACTIVE' ? '✅ Active' : '⏳ Pending Activation';
     document.getElementById('applySuccess').innerHTML = `
       <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#166534;font-weight:600;">
         🎉 Your application was approved! Your card is ready.
@@ -712,19 +845,112 @@
     clearAlert('manageAlert');
 
     try {
-      const result = await apiFetch(`/accounts/${accountId}/cards`);
-      const cards = result.data ?? [];
+      const [cardsResult, limitsResult] = await Promise.all([
+        apiFetch(`/accounts/${accountId}/cards`),
+        apiFetch(`/accounts/${accountId}/limits`).catch(() => ({ data: [] })),
+      ]);
+
+      const cards  = cardsResult.data ?? [];
+      const limits = limitsResult.data ?? [];
       localStorage.setItem('cam_accountId', accountId);
+
+      renderAccountLimitsPanel(accountId, limits);
       renderCardTiles(cards, accountId);
     } catch (err) {
       showAlert('manageAlert', err.message, 'error');
       document.getElementById('cardsContainer').innerHTML = '';
+      document.getElementById('accountLimitsContainer').innerHTML = '';
     } finally {
       btn.disabled = false;
       btn.textContent = 'Load Cards';
     }
   }
 
+  /* ════════════════════════════════════════
+     Account Limits Panel
+  ═════════════════════════════════════════ */
+  function renderAccountLimitsPanel(accountId, limits) {
+    const byType = {};
+    (limits || []).forEach(l => { byType[l.limitType] = l.valueCents; });
+
+    const daily  = toDollars(byType['DAILY']);
+    const monthly= toDollars(byType['MONTHLY']);
+    const txn    = toDollars(byType['PER_TRANSACTION']);
+
+    document.getElementById('accountLimitsContainer').innerHTML = `
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Account Spending Limits</h2>
+          <span style="font-size:.78rem;color:var(--text-lt)">Applies to all cards on this account</span>
+        </div>
+
+        <div class="acct-limits-grid">
+          <div class="acct-limit-card monthly-card">
+            <div class="alc-title">📅 Monthly Spend Cap</div>
+            <input id="acct-limit-monthly" type="number" min="0" step="0.01"
+              placeholder="No limit" value="${monthly}" />
+            <div class="alc-hint">Total spend allowed per calendar month</div>
+          </div>
+          <div class="acct-limit-card">
+            <div class="alc-title">📆 Daily Limit</div>
+            <input id="acct-limit-daily" type="number" min="0" step="0.01"
+              placeholder="No limit" value="${daily}" />
+            <div class="alc-hint">Max spend per day</div>
+          </div>
+          <div class="acct-limit-card">
+            <div class="alc-title">💳 Per-Transaction</div>
+            <input id="acct-limit-txn" type="number" min="0" step="0.01"
+              placeholder="No limit" value="${txn}" />
+            <div class="alc-hint">Max single transaction amount</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <button class="btn btn-save btn-sm" onclick="saveAccountLimits('${accountId}')">
+            Save Account Limits
+          </button>
+          <span id="acct-limits-alert" class="drawer-alert"></span>
+        </div>
+      </div>
+    `;
+  }
+
+  async function saveAccountLimits(accountId) {
+    const alertEl = document.getElementById('acct-limits-alert');
+    alertEl.className = 'drawer-alert';
+
+    const daily   = toCents(document.getElementById('acct-limit-daily').value);
+    const monthly = toCents(document.getElementById('acct-limit-monthly').value);
+    const txn     = toCents(document.getElementById('acct-limit-txn').value);
+
+    const limits = [];
+    if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
+    if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
+    if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
+
+    if (!limits.length) {
+      alertEl.textContent = 'Enter at least one limit value to save.';
+      alertEl.className = 'drawer-alert visible error';
+      return;
+    }
+
+    try {
+      await apiFetch(`/accounts/${accountId}/limits`, {
+        method: 'PUT',
+        body: JSON.stringify({ limits }),
+      });
+      alertEl.textContent = '✓ Limits saved';
+      alertEl.className = 'drawer-alert visible success';
+      setTimeout(() => { alertEl.className = 'drawer-alert'; }, 3000);
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.className = 'drawer-alert visible error';
+    }
+  }
+
+  /* ════════════════════════════════════════
+     Card Tiles
+  ═════════════════════════════════════════ */
   function renderCardTiles(cards, accountId) {
     const container = document.getElementById('cardsContainer');
     if (!cards.length) {
@@ -738,46 +964,153 @@
       return;
     }
 
-    const html = cards.map(card => {
-      const statusBadge = {
-        ACTIVE:              '<span class="badge badge-active">Active</span>',
-        PENDING_ACTIVATION:  '<span class="badge badge-pending">Pending Activation</span>',
-        INACTIVE:            '<span class="badge badge-inactive">Inactive</span>',
-        SUSPENDED:           '<span class="badge badge-suspended">Suspended</span>',
-        CLOSED:              '<span class="badge badge-closed">Closed</span>',
-      }[card.status] ?? `<span class="badge">${card.status}</span>`;
-
-      const lockBadge = card.isLocked
-        ? '<span class="badge badge-locked">🔒 Locked</span>'
-        : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
-
-      const isClosed = card.status === 'CLOSED';
-      const lockDisabled  = isClosed || card.isLocked  ? 'disabled' : '';
-      const unlockDisabled= isClosed || !card.isLocked ? 'disabled' : '';
-
-      return `
-        <div class="card-tile ${card.isLocked ? 'locked' : ''}" id="tile-${card.id}">
-          <div class="tile-header">
-            <span class="network">${card.network}</span>
-            <span class="type-badge ${card.type.toLowerCase()}">${card.type}</span>
-          </div>
-          <div class="masked-pan">${card.maskedPan}</div>
-          <div class="expiry">Expires ${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
-          <div class="status-row">${statusBadge}${lockBadge}</div>
-          <div class="tile-actions">
-            <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}', 'lock',   '${accountId}')">🔒 Lock</button>
-            <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}', 'unlock', '${accountId}')">🔓 Unlock</button>
-          </div>
-          <div id="tile-alert-${card.id}" class="alert" style="margin-top:.6rem;padding:.5rem .75rem;font-size:.8rem"></div>
-        </div>`;
-    }).join('');
-
+    const html = cards.map(card => buildCardTileHTML(card, accountId)).join('');
     container.innerHTML = `<div class="cards-grid">${html}</div>`;
   }
 
+  function buildCardTileHTML(card, accountId) {
+    const statusBadge = {
+      ACTIVE:             '<span class="badge badge-active">Active</span>',
+      PENDING_ACTIVATION: '<span class="badge badge-pending">Pending Activation</span>',
+      INACTIVE:           '<span class="badge badge-inactive">Inactive</span>',
+      SUSPENDED:          '<span class="badge badge-suspended">Suspended</span>',
+      CLOSED:             '<span class="badge badge-closed">Closed</span>',
+    }[card.status] ?? `<span class="badge">${card.status}</span>`;
+
+    const lockBadge = card.isLocked
+      ? '<span class="badge badge-locked">🔒 Locked</span>'
+      : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
+
+    const isClosed      = card.status === 'CLOSED';
+    const lockDisabled  = isClosed || card.isLocked  ? 'disabled' : '';
+    const unlockDisabled= isClosed || !card.isLocked ? 'disabled' : '';
+
+    /* Build limits drawer — virtual cards show monthly prominently */
+    const isVirtual = card.type === 'VIRTUAL';
+    const monthlyHighlight = isVirtual ? `
+      <div class="limit-highlight">
+        <div class="highlight-title">📅 Monthly Spend Cap (virtual card)</div>
+        <div class="limit-row">
+          <label>Monthly limit</label>
+          <input id="climit-monthly-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+          <span class="limit-unit">USD</span>
+        </div>
+      </div>` : '';
+
+    const monthlyRowIfPhysical = !isVirtual ? `
+      <div class="limit-row">
+        <label>Monthly</label>
+        <input id="climit-monthly-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+        <span class="limit-unit">USD</span>
+      </div>` : '';
+
+    return `
+      <div class="card-tile ${card.isLocked ? 'locked' : ''}" id="tile-${card.id}">
+        <div class="tile-header">
+          <span class="network">${card.network}</span>
+          <span class="type-badge ${card.type.toLowerCase()}">${card.type}</span>
+        </div>
+        <div class="masked-pan">${card.maskedPan}</div>
+        <div class="expiry">Expires ${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
+        <div class="status-row">${statusBadge}${lockBadge}</div>
+        <div class="tile-actions">
+          <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}', 'lock',   '${accountId}')">🔒 Lock</button>
+          <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}', 'unlock', '${accountId}')">🔓 Unlock</button>
+          ${!isClosed ? `<button class="btn btn-sm btn-limits" onclick="toggleCardLimits('${card.id}')">⚙ Limits</button>` : ''}
+        </div>
+
+        <!-- Limits drawer -->
+        <div class="limits-drawer" id="limits-drawer-${card.id}">
+          <h4>Card Spending Limits</h4>
+          ${monthlyHighlight}
+          ${monthlyRowIfPhysical}
+          <div class="limit-row">
+            <label>Daily</label>
+            <input id="climit-daily-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+            <span class="limit-unit">USD</span>
+          </div>
+          <div class="limit-row">
+            <label>Per transaction</label>
+            <input id="climit-txn-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+            <span class="limit-unit">USD</span>
+          </div>
+          <div class="drawer-actions">
+            <button class="btn btn-save btn-sm" onclick="saveCardLimits('${card.id}')">Save Limits</button>
+            <span id="card-limits-alert-${card.id}" class="drawer-alert"></span>
+          </div>
+        </div>
+
+        <div id="tile-alert-${card.id}" class="alert" style="margin-top:.6rem;padding:.5rem .75rem;font-size:.8rem"></div>
+      </div>`;
+  }
+
+  async function toggleCardLimits(cardId) {
+    const drawer = document.getElementById(`limits-drawer-${cardId}`);
+    const isOpen = drawer.classList.contains('open');
+    if (isOpen) {
+      drawer.classList.remove('open');
+      return;
+    }
+    drawer.classList.add('open');
+    /* Load existing limits once drawer is opened */
+    try {
+      const result = await apiFetch(`/cards/${cardId}/limits`);
+      const limits = result.data ?? [];
+      const byType = {};
+      limits.forEach(l => { byType[l.limitType] = l.valueCents; });
+
+      const daily   = document.getElementById(`climit-daily-${cardId}`);
+      const monthly = document.getElementById(`climit-monthly-${cardId}`);
+      const txn     = document.getElementById(`climit-txn-${cardId}`);
+
+      if (daily)   daily.value   = toDollars(byType['DAILY']);
+      if (monthly) monthly.value = toDollars(byType['MONTHLY']);
+      if (txn)     txn.value     = toDollars(byType['PER_TRANSACTION']);
+    } catch (_) {
+      /* silently ignore — fields will be empty (no limits set) */
+    }
+  }
+
+  async function saveCardLimits(cardId) {
+    const alertEl = document.getElementById(`card-limits-alert-${cardId}`);
+    alertEl.className = 'drawer-alert';
+
+    const dailyEl   = document.getElementById(`climit-daily-${cardId}`);
+    const monthlyEl = document.getElementById(`climit-monthly-${cardId}`);
+    const txnEl     = document.getElementById(`climit-txn-${cardId}`);
+
+    const daily   = toCents(dailyEl?.value);
+    const monthly = toCents(monthlyEl?.value);
+    const txn     = toCents(txnEl?.value);
+
+    const limits = [];
+    if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
+    if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
+    if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
+
+    if (!limits.length) {
+      alertEl.textContent = 'Enter at least one limit to save.';
+      alertEl.className = 'drawer-alert visible error';
+      return;
+    }
+
+    try {
+      await apiFetch(`/cards/${cardId}/limits`, {
+        method: 'PUT',
+        body: JSON.stringify({ limits }),
+      });
+      alertEl.textContent = '✓ Card limits saved';
+      alertEl.className = 'drawer-alert visible success';
+      setTimeout(() => { alertEl.className = 'drawer-alert'; }, 3000);
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.className = 'drawer-alert visible error';
+    }
+  }
+
   async function cardAction(cardId, action, accountId) {
-    const tile = document.getElementById(`tile-${cardId}`);
-    const btns = tile.querySelectorAll('button');
+    const tile    = document.getElementById(`tile-${cardId}`);
+    const btns    = tile.querySelectorAll('button');
     const alertEl = document.getElementById(`tile-alert-${cardId}`);
 
     btns.forEach(b => b.disabled = true);
@@ -786,7 +1119,6 @@
 
     try {
       await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST' });
-      // Refresh the full card list
       await loadCards();
     } catch (err) {
       alertEl.textContent = err.message;
