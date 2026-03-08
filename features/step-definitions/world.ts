@@ -44,6 +44,7 @@ export class CamWorld extends World {
   // Scenario context
   accountId?: string;
   cardId?: string;
+  newCardId?: string;
   lastStatus?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lastBody?: any;

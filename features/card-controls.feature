@@ -47,3 +47,19 @@ Feature: Card lock and unlock controls
     And I try to lock my card
     Then the response status should be 422
     And the error code should be "CARD_CLOSED"
+
+  Scenario: Replace a card due to loss
+    When I replace my card with reason "LOST"
+    Then the response status should be 201
+    And a new card should be issued
+    And the original card should be closed
+
+  Scenario: Replace a card due to fraud
+    When I replace my card with reason "FRAUD"
+    Then the response status should be 201
+    And a new card should be issued
+
+  Scenario: Cannot replace a closed card
+    When I close my card
+    And I try to replace my card with reason "LOST"
+    Then the response status should be 409

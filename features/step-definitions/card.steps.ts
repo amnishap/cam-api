@@ -78,6 +78,15 @@ When('I close my card', async function (this: CamWorld) {
   await this.del(`/api/v1/cards/${this.cardId}`);
 });
 
+When('I replace my card with reason {string}', async function (this: CamWorld, reason: string) {
+  const { body } = await this.post(`/api/v1/cards/${this.cardId}/replace`, { reason });
+  if (this.lastStatus === 201) this.newCardId = body.id;
+});
+
+When('I try to replace my card with reason {string}', async function (this: CamWorld, reason: string) {
+  await this.post(`/api/v1/cards/${this.cardId}/replace`, { reason });
+});
+
 /* ─── Then ─── */
 
 Then('the card status should be {string}', async function (this: CamWorld, status: string) {
@@ -108,4 +117,15 @@ Then('the card should be locked', async function (this: CamWorld) {
 Then('the card should not be locked', async function (this: CamWorld) {
   const { body } = await this.get(`/api/v1/cards/${this.cardId}`);
   assert.strictEqual(body.isLocked, false);
+});
+
+Then('a new card should be issued', async function (this: CamWorld) {
+  assert.ok(this.newCardId, 'Expected a new card ID in the response');
+  const { body } = await this.get(`/api/v1/cards/${this.newCardId}`);
+  assert.notStrictEqual(body.id, this.cardId, 'New card should have a different ID');
+});
+
+Then('the original card should be closed', async function (this: CamWorld) {
+  const { body } = await this.get(`/api/v1/cards/${this.cardId}`);
+  assert.strictEqual(body.status, 'CLOSED');
 });

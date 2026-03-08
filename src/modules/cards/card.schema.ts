@@ -67,3 +67,24 @@ export const cardIdParamSchema = {
 
 export const lockCardSchema = cardIdParamSchema;
 export const unlockCardSchema = cardIdParamSchema;
+
+export const replaceCardSchema = {
+  params: {
+    type: 'object',
+    required: ['id'],
+    properties: {
+      id: { type: 'string', format: 'uuid' },
+    },
+  },
+  body: {
+    type: 'object',
+    required: ['reason'],
+    additionalProperties: false,
+    properties: {
+      reason: {
+        type: 'string',
+        enum: ['LOST', 'STOLEN', 'FRAUD', 'DAMAGED'],
+      },
+    },
+  },
+};

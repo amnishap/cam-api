@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { CardService } from './card.service';
-import { createCardSchema, updateCardSchema, cardIdParamSchema, lockCardSchema, unlockCardSchema } from './card.schema';
+import { createCardSchema, updateCardSchema, cardIdParamSchema, lockCardSchema, unlockCardSchema, replaceCardSchema } from './card.schema';
 import { CreateCardBody, UpdateCardBody } from './card.types';
 
 const cardRoutes: FastifyPluginAsync = async (fastify) => {
@@ -85,6 +85,16 @@ const cardRoutes: FastifyPluginAsync = async (fastify) => {
     { schema: unlockCardSchema, preHandler: [fastify.authenticate] },
     async (request) => {
       return service.unlock(request.params.id);
+    },
+  );
+
+  // POST /cards/:id/replace
+  fastify.post<{ Params: { id: string }; Body: { reason: string } }>(
+    '/cards/:id/replace',
+    { schema: replaceCardSchema, preHandler: [fastify.authenticate] },
+    async (request, reply) => {
+      const card = await service.replace(request.params.id, request.body.reason);
+      return reply.status(201).send(card);
     },
   );
 

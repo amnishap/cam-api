@@ -207,6 +207,47 @@ export class CardService {
     });
   }
 
+  async replace(id: string, reason: string) {
+    const card = await this.getById(id);
+
+    if (card.status === CardStatus.CLOSED) {
+      throw new ConflictError('Cannot replace a closed card');
+    }
+
+    // Close the old card
+    await this.db.card.update({
+      where: { id },
+      data: { status: CardStatus.CLOSED, deactivatedAt: new Date() },
+    });
+
+    // Issue replacement with same type, network, cardholder, and inherited limits
+    const last4     = generateMockLast4();
+    const maskedPan = generateMaskedPan(last4, card.network);
+    const expiry    = getExpiryDate();
+    const isVirtual = card.type === CardType.VIRTUAL;
+
+    return this.db.card.create({
+      data: {
+        id: uuidv4(),
+        accountId: card.accountId,
+        type: card.type,
+        status: isVirtual ? CardStatus.ACTIVE : CardStatus.PENDING_ACTIVATION,
+        last4,
+        maskedPan,
+        network: card.network,
+        expiryMonth: expiry.month,
+        expiryYear: expiry.year,
+        expiresAt: new Date(expiry.year, expiry.month - 1, 1),
+        cardholderName: card.cardholderName,
+        shippingAddress: card.shippingAddress ?? undefined,
+        dailyLimitCents: card.dailyLimitCents,
+        monthlyLimitCents: card.monthlyLimitCents,
+        transactionLimitCents: card.transactionLimitCents,
+        activatedAt: isVirtual ? new Date() : null,
+      },
+    });
+  }
+
   private async transition(
     id: string,
     targetStatus: CardStatus,

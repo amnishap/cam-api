@@ -808,6 +808,40 @@
     }
     .mcc-preset:hover { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
 
+    /* Replace card panel */
+    .replace-panel {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f2f2f7;
+    }
+    .replace-panel.open { display: block; }
+    .replace-panel h4 {
+      font-size: .72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; color: #991b1b; margin-bottom: .75rem;
+    }
+    .replace-reasons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      margin-bottom: .85rem;
+    }
+    .replace-reason {
+      border: 1.5px solid rgba(0,0,0,.1);
+      border-radius: 10px;
+      padding: .6rem .75rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      background: var(--apple-lt);
+      text-align: left;
+      font-family: inherit;
+    }
+    .replace-reason:hover { border-color: #fca5a5; background: #fff0f0; }
+    .replace-reason.selected { border-color: #ef4444; background: #fef2f2; }
+    .replace-reason .rr-icon { font-size: 1.1rem; display: block; margin-bottom: .2rem; }
+    .replace-reason .rr-label { font-size: .78rem; font-weight: 600; color: var(--apple-black); }
+    .replace-reason .rr-sub { font-size: .68rem; color: var(--apple-gray); }
+
     /* Spinner */
     .spin { display: inline-block; animation: spin .6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -1475,7 +1509,36 @@
           <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}','lock','${accountId}')">🔒 Lock</button>
           <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}','unlock','${accountId}')">🔓 Unlock</button>
           ${!isClosed ? `<button class="btn btn-sm btn-limits" onclick="toggleCardLimits('${card.id}')">⚙ Limits</button>` : ''}
+          ${!isClosed ? `<button class="btn btn-sm btn-danger" onclick="toggleReplacePanel('${card.id}')">↺ Replace</button>` : ''}
         </div>
+
+        <!-- Replace panel -->
+        <div class="replace-panel" id="replace-panel-${card.id}">
+          <h4>🔄 Replace This Card</h4>
+          <div class="replace-reasons">
+            ${[
+              { value: 'LOST',    icon: '🔍', label: 'Lost',    sub: 'Card misplaced' },
+              { value: 'STOLEN',  icon: '🚨', label: 'Stolen',  sub: 'Card taken' },
+              { value: 'FRAUD',   icon: '⚠️',  label: 'Fraud',   sub: 'Suspicious activity' },
+              { value: 'DAMAGED', icon: '💔', label: 'Damaged', sub: 'Card not readable' },
+            ].map(r => `
+              <button type="button" class="replace-reason" data-reason="${r.value}"
+                onclick="selectReplaceReason('${card.id}', '${r.value}', this)">
+                <span class="rr-icon">${r.icon}</span>
+                <span class="rr-label">${r.label}</span>
+                <span class="rr-sub">${r.sub}</span>
+              </button>`).join('')}
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <button class="btn btn-sm btn-danger" id="confirm-replace-${card.id}" disabled
+              onclick="confirmReplace('${card.id}', '${accountId}')">
+              Confirm Replacement
+            </button>
+            <button class="btn btn-sm btn-ghost" onclick="toggleReplacePanel('${card.id}')">Cancel</button>
+            <span id="replace-alert-${card.id}" class="drawer-alert"></span>
+          </div>
+        </div>
+
         <div class="limits-drawer" id="limits-drawer-${card.id}">
           <h4>Card Spending Limits</h4>
           ${monthlyHighlight}
@@ -1559,6 +1622,53 @@
       alertEl.textContent = err.message;
       alertEl.className = 'alert alert-error visible';
       btns.forEach(b => b.disabled = false);
+    }
+  }
+
+  /* ════════════════════════════════════════
+     Card replacement
+  ═════════════════════════════════════════ */
+  const selectedReplaceReasons = {};
+
+  function toggleReplacePanel(cardId) {
+    const panel = document.getElementById(`replace-panel-${cardId}`);
+    panel.classList.toggle('open');
+    // Reset selection when closing
+    if (!panel.classList.contains('open')) {
+      delete selectedReplaceReasons[cardId];
+      panel.querySelectorAll('.replace-reason').forEach(b => b.classList.remove('selected'));
+      document.getElementById(`confirm-replace-${cardId}`).disabled = true;
+    }
+  }
+
+  function selectReplaceReason(cardId, reason, btn) {
+    selectedReplaceReasons[cardId] = reason;
+    btn.closest('.replace-reasons').querySelectorAll('.replace-reason').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById(`confirm-replace-${cardId}`).disabled = false;
+  }
+
+  async function confirmReplace(cardId, accountId) {
+    const reason  = selectedReplaceReasons[cardId];
+    const alertEl = document.getElementById(`replace-alert-${cardId}`);
+    const confirmBtn = document.getElementById(`confirm-replace-${cardId}`);
+    if (!reason) return;
+
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<span class="spin">⟳</span> Replacing…';
+    alertEl.className = 'drawer-alert';
+
+    try {
+      await apiFetch(`/cards/${cardId}/replace`, {
+        method: 'POST',
+        body: JSON.stringify({ reason }),
+      });
+      await loadCards();
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.className = 'drawer-alert visible error';
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Confirm Replacement';
     }
   }
 
