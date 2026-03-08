@@ -8,74 +8,632 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --brand:    #1e3a5f;
-      --brand-lt: #2d5f8f;
-      --accent:   #e8a020;
-      --green:    #2d8a4e;
-      --red:      #c0392b;
-      --orange:   #d35400;
-      --grey:     #7f8c8d;
-      --bg:       #f0f4f8;
-      --card-bg:  #ffffff;
-      --border:   #dce3ea;
-      --text:     #1a2332;
-      --text-lt:  #5a6a7a;
-      --radius:   12px;
-      --shadow:   0 2px 12px rgba(0,0,0,.08);
+      --apple-blue:   #0071e3;
+      --apple-blue-d: #0058b0;
+      --apple-black:  #1d1d1f;
+      --apple-gray:   #6e6e73;
+      --apple-lt:     #f5f5f7;
+      --apple-white:  #ffffff;
+      --apple-border: rgba(0,0,0,.1);
+      --green:        #34c759;
+      --red:          #ff3b30;
+      --orange:       #ff9500;
+      --shadow-sm:    0 2px 8px rgba(0,0,0,.06);
+      --shadow-md:    0 8px 32px rgba(0,0,0,.10);
+      --shadow-lg:    0 24px 64px rgba(0,0,0,.14);
+      --radius-sm:    10px;
+      --radius-md:    18px;
+      --radius-lg:    24px;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--apple-lt);
+      color: var(--apple-black);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ─── Header ─── */
+    /* ─── Nav (Apple-style) ─── */
     header {
-      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-lt) 100%);
-      color: #fff;
-      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--apple-border);
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      padding: 0 2rem;
     }
-    header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: .5px; }
-    header h1 span { color: var(--accent); }
-
-    nav { display: flex; gap: .5rem; }
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      color: var(--apple-black);
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .nav-logo .logo-dot { color: var(--apple-blue); }
+    nav { display: flex; gap: .25rem; }
     nav button {
       background: transparent;
-      border: 1.5px solid rgba(255,255,255,.4);
-      color: #fff;
-      padding: .45rem 1rem;
+      border: none;
+      color: var(--apple-gray);
+      padding: .4rem .85rem;
       border-radius: 8px;
       cursor: pointer;
       font-size: .875rem;
-      transition: background .15s, border-color .15s;
+      font-family: inherit;
+      font-weight: 400;
+      transition: color .15s, background .15s;
+      letter-spacing: -.1px;
     }
-    nav button:hover, nav button.active {
-      background: rgba(255,255,255,.15);
-      border-color: rgba(255,255,255,.8);
-    }
+    nav button:hover { color: var(--apple-black); background: rgba(0,0,0,.05); }
+    nav button.active { color: var(--apple-blue); font-weight: 500; }
 
     /* ─── Layout ─── */
-    main { max-width: 900px; margin: 2.5rem auto; padding: 0 1.5rem; }
+    main { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; }
 
     .page { display: none; }
     .page.active { display: block; }
 
-    /* ─── Panel ─── */
-    .panel {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 2rem;
+    /* ════════════════════════════════
+       APPLY PAGE — Apple product style
+    ════════════════════════════════ */
+
+    /* Hero */
+    .apply-hero {
+      text-align: center;
+      padding: 72px 1rem 48px;
+    }
+    .apply-hero .eyebrow {
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--apple-blue);
+      margin-bottom: .75rem;
+    }
+    .apply-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.07;
+      color: var(--apple-black);
+      margin-bottom: 1rem;
+    }
+    .apply-hero p {
+      font-size: 1.05rem;
+      color: var(--apple-gray);
+      line-height: 1.6;
+      max-width: 520px;
+      margin: 0 auto;
+      letter-spacing: -.01em;
+    }
+
+    /* Card preview graphic */
+    .card-preview-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0 56px;
+      perspective: 1000px;
+    }
+    .card-preview {
+      width: 340px;
+      height: 214px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #e8e8ed 0%, #f5f5f7 40%, #d1d1d6 70%, #c7c7cc 100%);
+      box-shadow:
+        0 2px 4px rgba(0,0,0,.04),
+        0 8px 24px rgba(0,0,0,.12),
+        0 32px 64px rgba(0,0,0,.10),
+        inset 0 1px 0 rgba(255,255,255,.8);
+      position: relative;
+      overflow: hidden;
+      animation: cardFloat 4s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+    @keyframes cardFloat {
+      0%, 100% { transform: rotateX(4deg) rotateY(-6deg) translateY(0); }
+      50%       { transform: rotateX(4deg) rotateY(-6deg) translateY(-8px); }
+    }
+    .card-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 60%);
+      border-radius: inherit;
+    }
+    .card-preview .cp-chip {
+      position: absolute;
+      left: 28px; top: 68px;
+      width: 42px; height: 32px;
+      background: linear-gradient(135deg, #d4af37 0%, #f5e17a 40%, #b8941f 100%);
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .card-preview .cp-chip::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: 28px; height: 22px;
+      border: 1.5px solid rgba(180,150,30,.5);
+      border-radius: 3px;
+    }
+    .card-preview .cp-logo {
+      position: absolute;
+      right: 24px; top: 24px;
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: rgba(0,0,0,.45);
+    }
+    .card-preview .cp-network {
+      position: absolute;
+      right: 20px; bottom: 20px;
+      display: flex;
+    }
+    .card-preview .cp-network span {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      opacity: .7;
+    }
+    .card-preview .cp-network span:first-child {
+      background: #eb001b;
+      margin-right: -10px;
+    }
+    .card-preview .cp-network span:last-child { background: #f79e1b; }
+    .card-preview .cp-name {
+      position: absolute;
+      left: 28px; bottom: 22px;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.5);
+    }
+
+    /* Form card */
+    .apply-form-card {
+      background: var(--apple-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 2.5rem;
+      margin-bottom: 4rem;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    /* Progress steps — Apple style */
+    .apple-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+    }
+    .apple-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .apple-step-connector {
+      flex: 1;
+      height: 2px;
+      background: #e5e5ea;
+      margin: 0;
+      min-width: 40px;
+      transition: background .4s;
+    }
+    .apple-step-connector.done { background: var(--apple-blue); }
+    .apple-step-dot {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #e5e5ea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #aeaeb2;
+      transition: background .3s, color .3s, transform .3s;
+      position: relative;
+      z-index: 1;
+    }
+    .apple-step.active .apple-step-dot {
+      background: var(--apple-blue);
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 0 0 4px rgba(0,113,227,.18);
+    }
+    .apple-step.done .apple-step-dot {
+      background: var(--apple-blue);
+      color: #fff;
+    }
+    .apple-step-label {
+      font-size: .7rem;
+      font-weight: 500;
+      color: #aeaeb2;
+      margin-top: .4rem;
+      white-space: nowrap;
+      letter-spacing: -.01em;
+    }
+    .apple-step.active .apple-step-label { color: var(--apple-blue); }
+    .apple-step.done  .apple-step-label  { color: var(--apple-gray); }
+
+    /* Section heading inside form */
+    .step-heading {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: var(--apple-black);
+      margin-bottom: .35rem;
+    }
+    .step-subheading {
+      font-size: .9rem;
+      color: var(--apple-gray);
+      margin-bottom: 1.75rem;
+      letter-spacing: -.01em;
+    }
+
+    /* Apple-style form inputs */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .85rem;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: .3rem; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--apple-gray);
+      letter-spacing: -.01em;
+      text-transform: none;
+    }
+    .form-group input,
+    .form-group select {
+      background: var(--apple-lt);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: .7rem 1rem;
+      font-size: .95rem;
+      font-family: inherit;
+      color: var(--apple-black);
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      width: 100%;
+      letter-spacing: -.01em;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--apple-blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0,113,227,.12);
+    }
+    .form-group input::placeholder { color: #aeaeb2; }
+
+    /* Card type selector — Apple style */
+    .type-selector { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .type-option {
+      border: 1.5px solid #e5e5ea;
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      position: relative;
+    }
+    .type-option:hover { border-color: #c7c7cc; background: var(--apple-lt); }
+    .type-option.selected {
+      border-color: var(--apple-blue);
+      background: #f0f7ff;
+      box-shadow: 0 0 0 3px rgba(0,113,227,.1);
+    }
+    .type-option input[type=radio] { display: none; }
+    .type-option .icon { font-size: 2rem; display: block; margin-bottom: .5rem; }
+    .type-option .label { font-size: .9rem; font-weight: 600; letter-spacing: -.02em; color: var(--apple-black); }
+    .type-option .sub { font-size: .75rem; color: var(--apple-gray); margin-top: .2rem; }
+    .type-option .check {
+      position: absolute;
+      top: .6rem; right: .6rem;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--apple-blue);
+      color: #fff;
+      font-size: .65rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .type-option.selected .check { display: flex; }
+
+    /* Shipping */
+    #shippingSection {
+      display: none;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid #f2f2f7;
+    }
+    #shippingSection.visible { display: block; }
+    #shippingSection h3 {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--apple-gray);
+      margin-bottom: .85rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    /* Buttons — Apple style */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: .7rem 1.5rem;
+      border-radius: 980px; /* Apple pill */
+      border: none;
+      font-size: .92rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: -.01em;
+      transition: opacity .15s, transform .12s, box-shadow .15s;
+    }
+    .btn:hover  { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .38; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      background: var(--apple-blue);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,113,227,.3);
+    }
+    .btn-primary:hover { box-shadow: 0 4px 16px rgba(0,113,227,.4); opacity: 1; background: #0077ed; }
+
+    .btn-ghost {
+      background: rgba(0,0,0,.05);
+      color: var(--apple-black);
+    }
+    .btn-ghost:hover { background: rgba(0,0,0,.09); opacity: 1; }
+
+    .btn-sm { padding: .45rem 1rem; font-size: .82rem; }
+    .btn-accent { background: var(--apple-blue); color: #fff; }
+
+    /* Lock/unlock/limits buttons */
+    .btn-lock   { background: #fff3cd; color: #92400e; border: 1px solid #fbbf24; border-radius: 980px; }
+    .btn-unlock { background: #d1fae5; color: #065f46; border: 1px solid #34d399; border-radius: 980px; }
+    .btn-danger { background: #fff; color: var(--red); border: 1px solid var(--red); border-radius: 980px; }
+    .btn-save   { background: var(--green); color: #fff; border-radius: 980px; }
+    .btn-limits { background: rgba(0,113,227,.08); color: var(--apple-blue); border: 1px solid rgba(0,113,227,.2); border-radius: 980px; }
+
+    .form-actions {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Alerts */
+    .alert {
+      border-radius: var(--radius-sm);
+      padding: .8rem 1.1rem;
+      margin-top: 1rem;
+      font-size: .88rem;
+      display: none;
+      letter-spacing: -.01em;
+    }
+    .alert.visible { display: block; }
+    .alert-error   { background: #fff2f2; color: #c0392b; border: 1px solid #fecaca; }
+    .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .alert-info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+    /* ─── Success — Apple Card style ─── */
+    .success-wrap {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .success-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      border-radius: 980px;
+      padding: .45rem 1.1rem;
+      font-size: .85rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .apple-card {
+      width: 100%;
+      max-width: 380px;
+      height: 240px;
+      border-radius: 20px;
+      margin: 0 auto 2rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, #e8e8ed 0%, #f5f5f7 35%, #d8d8df 65%, #c8c8cf 100%);
+      box-shadow:
+        0 2px 4px rgba(0,0,0,.04),
+        0 12px 40px rgba(0,0,0,.15),
+        0 40px 80px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.9);
+      animation: cardEntrance .6s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes cardEntrance {
+      from { transform: translateY(30px) scale(.9); opacity: 0; }
+      to   { transform: translateY(0) scale(1);     opacity: 1; }
+    }
+    .apple-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,0) 55%);
+    }
+    .apple-card .ac-logo {
+      position: absolute;
+      top: 24px; left: 28px;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      color: rgba(0,0,0,.4);
+    }
+    .ac-chip {
+      position: absolute;
+      left: 28px; top: 72px;
+      width: 46px; height: 34px;
+      background: linear-gradient(135deg, #c8a84b 0%, #f0d060 40%, #a07830 100%);
+      border-radius: 7px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .ac-chip::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(255,220,100,.4);
+      border-radius: 4px;
+    }
+    .apple-card .ac-pan {
+      position: absolute;
+      left: 28px; bottom: 52px;
+      font-family: 'SF Mono', 'SFMono-Regular', ui-monospace, monospace;
+      font-size: 1rem;
+      letter-spacing: .18em;
+      color: rgba(0,0,0,.55);
+      font-weight: 500;
+    }
+    .apple-card .ac-name {
+      position: absolute;
+      left: 28px; bottom: 24px;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,.45);
+    }
+    .apple-card .ac-expiry {
+      position: absolute;
+      right: 28px; bottom: 24px;
+      font-size: .72rem;
+      color: rgba(0,0,0,.4);
+      font-weight: 500;
+      letter-spacing: .05em;
+    }
+    .apple-card .ac-network {
+      position: absolute;
+      right: 22px; top: 22px;
+      display: flex;
+    }
+    .apple-card .ac-network span {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      opacity: .65;
+    }
+    .apple-card .ac-network span:first-child { background: #eb001b; margin-right: -11px; }
+    .apple-card .ac-network span:last-child  { background: #f79e1b; }
+    .apple-card .ac-type-badge {
+      position: absolute;
+      top: 24px; left: 50%;
+      transform: translateX(-50%);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,.08);
+      padding: .2rem .55rem;
+      border-radius: 5px;
+      color: rgba(0,0,0,.45);
+    }
+
+    .success-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
       margin-bottom: 1.5rem;
     }
-    .panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--brand); }
+    .success-meta-item .smk {
+      font-size: .72rem;
+      color: var(--apple-gray);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .2rem;
+    }
+    .success-meta-item .smv {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--apple-black);
+      letter-spacing: -.01em;
+    }
+
+    .success-chips {
+      display: flex;
+      justify-content: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      background: var(--apple-lt);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 980px;
+      padding: .3rem .85rem;
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--apple-black);
+    }
+    .chip.green { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+
+    .account-id-note {
+      font-size: .78rem;
+      color: var(--apple-gray);
+      margin-top: 1rem;
+    }
+    .account-id-note code {
+      font-family: ui-monospace, monospace;
+      background: var(--apple-lt);
+      padding: .15rem .45rem;
+      border-radius: 5px;
+      font-size: .75rem;
+    }
+
+    /* ════════════════════════════════
+       MANAGE PAGE
+    ════════════════════════════════ */
+    .panel {
+      background: var(--apple-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,.06);
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .panel h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.025em;
+      margin-bottom: 1.25rem;
+      color: var(--apple-black);
+    }
     .panel-header {
       display: flex;
       align-items: center;
@@ -84,161 +642,47 @@
     }
     .panel-header h2 { margin-bottom: 0; }
 
-    /* ─── Form ─── */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: .35rem; }
-    .form-group.full { grid-column: 1 / -1; }
-    label { font-size: .8rem; font-weight: 600; color: var(--text-lt); text-transform: uppercase; letter-spacing: .4px; }
-    input, select {
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: .6rem .9rem;
-      font-size: .95rem;
-      color: var(--text);
-      background: #fff;
-      transition: border-color .15s;
-      width: 100%;
-    }
-    input:focus, select:focus { outline: none; border-color: var(--brand-lt); }
+    .manage-page-wrap { padding: 2rem 0 4rem; }
 
-    /* ─── Card type selector ─── */
-    .type-selector { display: flex; gap: .75rem; }
-    .type-option {
-      flex: 1;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      padding: .9rem;
-      cursor: pointer;
-      text-align: center;
-      transition: border-color .15s, background .15s;
-    }
-    .type-option:hover { border-color: var(--brand-lt); }
-    .type-option.selected { border-color: var(--brand); background: #eef4fc; }
-    .type-option input[type=radio] { display: none; }
-    .type-option .icon { font-size: 1.6rem; display: block; margin-bottom: .3rem; }
-    .type-option .label { font-size: .85rem; font-weight: 600; }
-    .type-option .sub { font-size: .75rem; color: var(--text-lt); margin-top: .15rem; }
+    /* Lookup row */
+    .lookup-row { display: flex; gap: .75rem; align-items: flex-end; }
+    .lookup-row .form-group { flex: 1; }
 
-    /* ─── Shipping section ─── */
-    #shippingSection {
-      display: none;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1.5px solid var(--border);
-    }
-    #shippingSection.visible { display: block; }
-    #shippingSection h3 { font-size: .9rem; font-weight: 700; color: var(--text-lt); margin-bottom: .75rem; text-transform: uppercase; letter-spacing: .4px; }
-
-    /* ─── Button ─── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .65rem 1.4rem;
-      border-radius: 8px;
-      border: none;
-      font-size: .9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity .15s, transform .1s;
-    }
-    .btn:hover { opacity: .88; }
-    .btn:active { transform: scale(.97); }
-    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-    .btn-primary { background: var(--brand); color: #fff; }
-    .btn-accent  { background: var(--accent); color: #fff; }
-    .btn-outline { background: #fff; color: var(--brand); border: 1.5px solid var(--brand); }
-    .btn-sm { padding: .4rem .85rem; font-size: .8rem; }
-    .btn-lock   { background: #fff3e0; color: #b45309; border: 1.5px solid #fbbf24; }
-    .btn-unlock { background: #ecfdf5; color: #065f46; border: 1.5px solid #34d399; }
-    .btn-danger { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
-    .btn-save   { background: var(--green); color: #fff; }
-    .btn-limits { background: #f0f4ff; color: var(--brand); border: 1.5px solid #c7d3f5; }
-
-    .form-actions { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: .75rem; }
-
-    /* ─── Alerts ─── */
-    .alert {
-      border-radius: 8px;
-      padding: .85rem 1rem;
-      margin-top: 1rem;
-      font-size: .9rem;
-      display: none;
-    }
-    .alert.visible { display: block; }
-    .alert-error   { background: #fef2f2; color: #991b1b; border: 1.5px solid #fca5a5; }
-    .alert-success { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
-    .alert-info    { background: #eff6ff; color: #1e40af; border: 1.5px solid #93c5fd; }
-
-    /* ─── Success card ─── */
-    .success-card {
-      background: linear-gradient(135deg, var(--brand) 0%, #1a4a7a 100%);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 2rem;
-      margin-top: 1rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .success-card::before {
-      content: '';
-      position: absolute;
-      right: -40px; top: -40px;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.06);
-    }
-    .success-card::after {
-      content: '';
-      position: absolute;
-      right: 40px; bottom: -60px;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.04);
-    }
-    .success-card h3 { font-size: 1rem; opacity: .7; margin-bottom: 1rem; }
-    .success-card .pan { font-size: 1.4rem; font-family: monospace; letter-spacing: 3px; margin-bottom: 1rem; }
-    .success-card .meta { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .success-card .meta-item span { display: block; }
-    .success-card .meta-item .key { font-size: .7rem; opacity: .65; text-transform: uppercase; letter-spacing: .5px; }
-    .success-card .meta-item .val { font-size: .95rem; font-weight: 600; margin-top: .15rem; }
-    .success-card .chip { display: inline-flex; align-items: center; gap: .3rem; background: rgba(255,255,255,.15); border-radius: 6px; padding: .25rem .6rem; font-size: .75rem; font-weight: 600; margin-top: .75rem; }
-
-    /* ─── Card tiles ─── */
+    /* Cards grid */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem; }
 
     .card-tile {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--apple-white);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: var(--radius-md);
       padding: 1.25rem;
-      position: relative;
-      transition: box-shadow .15s;
+      transition: box-shadow .2s, transform .2s;
     }
-    .card-tile:hover { box-shadow: var(--shadow); }
+    .card-tile:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .card-tile.locked { border-color: #fbbf24; background: #fffbeb; }
 
     .card-tile .tile-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .75rem; }
-    .card-tile .network { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-lt); }
+    .card-tile .network { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--apple-gray); }
     .card-tile .type-badge {
-      font-size: .65rem; font-weight: 700; text-transform: uppercase;
-      padding: .2rem .5rem; border-radius: 5px; letter-spacing: .5px;
+      font-size: .62rem; font-weight: 700; text-transform: uppercase;
+      padding: .2rem .5rem; border-radius: 5px; letter-spacing: .04em;
     }
-    .type-badge.virtual  { background: #dbeafe; color: #1d4ed8; }
+    .type-badge.virtual  { background: #e0f2fe; color: #0369a1; }
     .type-badge.physical { background: #fce7f3; color: #9d174d; }
 
-    .card-tile .masked-pan { font-family: monospace; font-size: 1.05rem; letter-spacing: 2px; margin: .5rem 0; color: var(--text); }
-    .card-tile .expiry { font-size: .8rem; color: var(--text-lt); margin-bottom: .75rem; }
+    .card-tile .masked-pan {
+      font-family: ui-monospace, 'SFMono-Regular', monospace;
+      font-size: 1rem;
+      letter-spacing: .12em;
+      margin: .5rem 0;
+      color: var(--apple-black);
+    }
+    .card-tile .expiry { font-size: .78rem; color: var(--apple-gray); margin-bottom: .75rem; }
 
-    .status-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .status-row { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; margin-bottom: 1rem; }
     .badge {
-      font-size: .7rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .5px; padding: .2rem .55rem; border-radius: 5px;
+      font-size: .67rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; padding: .2rem .55rem; border-radius: 5px;
     }
     .badge-active     { background: #dcfce7; color: #166534; }
     .badge-pending    { background: #fef9c3; color: #854d0e; }
@@ -246,229 +690,140 @@
     .badge-suspended  { background: #ffedd5; color: #9a3412; }
     .badge-closed     { background: #fee2e2; color: #991b1b; }
     .badge-locked     { background: #fef3c7; color: #92400e; }
-    .badge-unlocked   { background: #ecfdf5; color: #065f46; }
+    .badge-unlocked   { background: #dcfce7; color: #166534; }
 
-    .tile-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .tile-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
 
-    /* ─── Limits drawer on card tile ─── */
+    /* Limits drawer */
     .limits-drawer {
       margin-top: 1rem;
       padding-top: 1rem;
-      border-top: 1.5px solid var(--border);
+      border-top: 1px solid #f2f2f7;
       display: none;
     }
     .limits-drawer.open { display: block; }
     .limits-drawer h4 {
-      font-size: .75rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .4px; color: var(--text-lt); margin-bottom: .75rem;
+      font-size: .72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; color: var(--apple-gray); margin-bottom: .75rem;
     }
-
-    .limit-row {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      margin-bottom: .6rem;
-    }
-    .limit-row label {
-      font-size: .75rem;
-      min-width: 110px;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--text);
-      font-weight: 500;
-    }
+    .limit-row { display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem; }
+    .limit-row label { font-size: .78rem; min-width: 115px; color: var(--apple-black); font-weight: 500; }
     .limit-row input {
       flex: 1;
-      padding: .4rem .6rem;
+      background: var(--apple-lt);
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      padding: .38rem .65rem;
       font-size: .85rem;
-      border-radius: 6px;
+      font-family: inherit;
+      color: var(--apple-black);
+      transition: border-color .2s;
     }
-    .limit-row .limit-unit {
-      font-size: .75rem;
-      color: var(--text-lt);
-      min-width: 28px;
-    }
+    .limit-row input:focus { outline: none; border-color: var(--apple-blue); background: #fff; }
+    .limit-row .limit-unit { font-size: .73rem; color: var(--apple-gray); min-width: 28px; }
 
     .limit-highlight {
-      background: linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%);
-      border: 1.5px solid #fbbf24;
-      border-radius: 8px;
-      padding: .6rem .75rem;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%);
+      border: 1px solid #fbbf24;
+      border-radius: 10px;
+      padding: .7rem .85rem;
       margin-bottom: .75rem;
     }
     .limit-highlight .highlight-title {
-      font-size: .7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      color: #92400e;
-      margin-bottom: .5rem;
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .04em; color: #92400e; margin-bottom: .5rem;
     }
 
-    .drawer-actions {
-      display: flex;
-      gap: .5rem;
-      margin-top: .75rem;
-      align-items: center;
-    }
+    .drawer-actions { display: flex; gap: .5rem; margin-top: .75rem; align-items: center; }
     .drawer-alert {
-      font-size: .78rem;
-      border-radius: 6px;
-      padding: .35rem .6rem;
-      display: none;
-      flex: 1;
+      font-size: .78rem; border-radius: 6px; padding: .3rem .6rem; display: none; flex: 1;
     }
     .drawer-alert.visible { display: block; }
-    .drawer-alert.success { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
-    .drawer-alert.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+    .drawer-alert.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .drawer-alert.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
-    /* ─── Account limits panel ─── */
+    /* Account limits */
     .acct-limits-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
     }
     @media (max-width: 600px) { .acct-limits-grid { grid-template-columns: 1fr; } }
-
     .acct-limit-card {
-      background: #f8fafc;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      background: var(--apple-lt);
+      border: 1px solid rgba(0,0,0,.07);
+      border-radius: var(--radius-sm);
       padding: 1rem;
     }
     .acct-limit-card .alc-title {
-      font-size: .7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      color: var(--text-lt);
-      margin-bottom: .5rem;
+      font-size: .7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; color: var(--apple-gray); margin-bottom: .5rem;
     }
     .acct-limit-card.monthly-card {
       border-color: #fbbf24;
       background: linear-gradient(135deg, #fffbeb 0%, #fef9c3 100%);
     }
     .acct-limit-card.monthly-card .alc-title { color: #92400e; }
-
     .acct-limit-card input {
-      font-size: .9rem;
-      padding: .45rem .65rem;
+      font-size: .9rem; padding: .42rem .6rem;
+      background: rgba(255,255,255,.7);
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      width: 100%;
+      font-family: inherit;
+      color: var(--apple-black);
+      transition: border-color .2s;
     }
-    .acct-limit-card .alc-hint {
-      font-size: .7rem;
-      color: var(--text-lt);
-      margin-top: .3rem;
-    }
+    .acct-limit-card input:focus { outline: none; border-color: var(--apple-blue); background: #fff; }
+    .acct-limit-card .alc-hint { font-size: .68rem; color: var(--apple-gray); margin-top: .3rem; }
 
-    /* ─── MCC block controls ─── */
-    .mcc-section {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1.5px solid var(--border);
-    }
+    /* MCC */
+    .mcc-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f2f2f7; }
     .mcc-section-title {
-      font-size: .72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      color: var(--text-lt);
-      margin-bottom: .6rem;
+      font-size: .7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; color: var(--apple-gray); margin-bottom: .6rem;
     }
-    .mcc-add-row {
-      display: flex;
-      gap: .5rem;
-      align-items: center;
-      margin-bottom: .6rem;
-    }
+    .mcc-add-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .6rem; }
     .mcc-add-row input {
-      width: 80px;
-      padding: .38rem .55rem;
-      font-size: .85rem;
-      border-radius: 6px;
-      font-family: monospace;
-      letter-spacing: 1px;
+      width: 80px; padding: .36rem .55rem; font-size: .85rem;
+      border-radius: 8px; font-family: monospace; letter-spacing: 1px;
+      background: var(--apple-lt); border: 1.5px solid transparent; color: var(--apple-black);
     }
-    .btn-block { background: #fff0f0; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .mcc-add-row input:focus { outline: none; border-color: var(--apple-blue); background: #fff; }
+    .btn-block { background: #fff0f0; color: #991b1b; border: 1px solid #fca5a5; border-radius: 980px; }
     .mcc-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; min-height: 1.5rem; }
     .mcc-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fca5a5;
-      border-radius: 5px;
-      padding: .2rem .45rem;
-      font-size: .75rem;
-      font-weight: 600;
-      font-family: monospace;
+      display: inline-flex; align-items: center; gap: .3rem;
+      background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+      border-radius: 5px; padding: .2rem .45rem; font-size: .74rem; font-weight: 600; font-family: monospace;
     }
     .mcc-tag button {
-      background: none;
-      border: none;
-      color: #991b1b;
-      cursor: pointer;
-      font-size: .8rem;
-      line-height: 1;
-      padding: 0;
-      opacity: .7;
+      background: none; border: none; color: #991b1b; cursor: pointer;
+      font-size: .8rem; line-height: 1; padding: 0; opacity: .7;
     }
     .mcc-tag button:hover { opacity: 1; }
-    .mcc-presets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .35rem;
-      margin-top: .4rem;
-    }
+    .mcc-presets { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
     .mcc-preset {
-      font-size: .7rem;
-      padding: .2rem .5rem;
-      border-radius: 5px;
-      border: 1px solid var(--border);
-      background: #f8fafc;
-      color: var(--text);
-      cursor: pointer;
-      transition: background .12s;
+      font-size: .7rem; padding: .2rem .5rem; border-radius: 5px;
+      border: 1px solid rgba(0,0,0,.1); background: var(--apple-lt);
+      color: var(--apple-black); cursor: pointer; transition: background .12s; font-family: inherit;
     }
     .mcc-preset:hover { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
 
-    /* ─── Lookup ─── */
-    .lookup-row { display: flex; gap: .75rem; align-items: flex-end; }
-    .lookup-row .form-group { flex: 1; }
-
-    /* ─── Spinner ─── */
+    /* Spinner */
     .spin { display: inline-block; animation: spin .6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── Empty state ─── */
-    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-lt); }
+    /* Empty state */
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--apple-gray); }
     .empty .icon { font-size: 2.5rem; margin-bottom: .75rem; }
-
-    /* ─── Steps ─── */
-    .steps { display: flex; gap: 0; margin-bottom: 2rem; }
-    .step { flex: 1; text-align: center; position: relative; }
-    .step::after { content: ''; position: absolute; top: 14px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
-    .step:last-child::after { display: none; }
-    .step-dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--border); color: var(--text-lt);
-      font-size: .8rem; font-weight: 700;
-      display: inline-flex; align-items: center; justify-content: center;
-      position: relative; z-index: 1;
-    }
-    .step.done .step-dot  { background: var(--green); color: #fff; }
-    .step.active .step-dot { background: var(--brand); color: #fff; }
-    .step-label { font-size: .7rem; color: var(--text-lt); margin-top: .35rem; }
-    .step.active .step-label { color: var(--brand); font-weight: 600; }
   </style>
 </head>
 <body>
 
+<!-- ─── Nav ─── -->
 <header>
-  <h1>CAM <span>|</span> Card &amp; Account Management</h1>
+  <div class="nav-logo">CAM<span class="logo-dot"> ·</span> Card &amp; Account</div>
   <nav>
-    <button class="active" onclick="showPage('apply', this)">Apply for a Card</button>
+    <button class="active" onclick="showPage('apply', this)">Apply</button>
     <button onclick="showPage('manage', this)">Manage Cards</button>
   </nav>
 </header>
@@ -478,32 +833,68 @@
   <!-- ══════════════ APPLY PAGE ══════════════ -->
   <div id="page-apply" class="page active">
 
-    <div class="panel">
-      <h2>Apply for a Credit Card</h2>
+    <!-- Hero -->
+    <div class="apply-hero">
+      <div class="eyebrow">Introducing</div>
+      <h1>Your card.<br>Beautifully simple.</h1>
+      <p>Apply in minutes. No hidden fees. Virtual or physical — your choice.</p>
+    </div>
 
-      <!-- Progress steps -->
-      <div class="steps" id="applySteps">
-        <div class="step active" id="step1"><div class="step-dot">1</div><div class="step-label">Your Info</div></div>
-        <div class="step" id="step2"><div class="step-dot">2</div><div class="step-label">Address</div></div>
-        <div class="step" id="step3"><div class="step-dot">3</div><div class="step-label">Card Type</div></div>
-        <div class="step" id="step4"><div class="step-dot">4</div><div class="step-label">Done</div></div>
+    <!-- Card preview graphic -->
+    <div class="card-preview-wrap">
+      <div class="card-preview">
+        <div class="cp-logo">CAM</div>
+        <div class="cp-chip"></div>
+        <div class="cp-name">YOUR NAME</div>
+        <div class="cp-network">
+          <span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="apply-form-card">
+
+      <!-- Progress -->
+      <div class="apple-steps" id="applySteps">
+        <div class="apple-step active" id="step1">
+          <div class="apple-step-dot">1</div>
+          <div class="apple-step-label">Your Info</div>
+        </div>
+        <div class="apple-step-connector" id="conn1"></div>
+        <div class="apple-step" id="step2">
+          <div class="apple-step-dot">2</div>
+          <div class="apple-step-label">Address</div>
+        </div>
+        <div class="apple-step-connector" id="conn2"></div>
+        <div class="apple-step" id="step3">
+          <div class="apple-step-dot">3</div>
+          <div class="apple-step-label">Card Type</div>
+        </div>
+        <div class="apple-step-connector" id="conn3"></div>
+        <div class="apple-step" id="step4">
+          <div class="apple-step-dot">4</div>
+          <div class="apple-step-label">Done</div>
+        </div>
       </div>
 
       <form id="applyForm" novalidate>
 
-        <!-- Step 1: Personal -->
+        <!-- Step 1 -->
         <div id="applyStep1">
+          <div class="step-heading">Let's get started</div>
+          <div class="step-subheading">Tell us a little about yourself.</div>
           <div class="form-grid">
             <div class="form-group">
-              <label for="firstName">First Name *</label>
+              <label for="firstName">First Name</label>
               <input id="firstName" type="text" placeholder="Jane" required />
             </div>
             <div class="form-group">
-              <label for="lastName">Last Name *</label>
+              <label for="lastName">Last Name</label>
               <input id="lastName" type="text" placeholder="Doe" required />
             </div>
-            <div class="form-group">
-              <label for="email">Email Address *</label>
+            <div class="form-group full">
+              <label for="email">Email Address</label>
               <input id="email" type="email" placeholder="jane@example.com" required />
             </div>
             <div class="form-group">
@@ -515,13 +906,15 @@
               <input id="phone" type="tel" placeholder="+1 555 000 0000" />
             </div>
           </div>
-          <div class="form-actions">
-            <button type="button" class="btn btn-primary" onclick="applyNext(2)">Continue →</button>
+          <div class="form-actions" style="justify-content:flex-end">
+            <button type="button" class="btn btn-primary" onclick="applyNext(2)">Continue</button>
           </div>
         </div>
 
-        <!-- Step 2: Address -->
+        <!-- Step 2 -->
         <div id="applyStep2" style="display:none">
+          <div class="step-heading">Your address</div>
+          <div class="step-subheading">We'll use this for your account records.</div>
           <div class="form-grid">
             <div class="form-group full">
               <label for="addressLine1">Address Line 1</label>
@@ -549,48 +942,50 @@
             </div>
           </div>
           <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="applyNext(1)">← Back</button>
-            <button type="button" class="btn btn-primary" onclick="applyNext(3)">Continue →</button>
+            <button type="button" class="btn btn-ghost" onclick="applyNext(1)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="applyNext(3)">Continue</button>
           </div>
         </div>
 
-        <!-- Step 3: Card Type -->
+        <!-- Step 3 -->
         <div id="applyStep3" style="display:none">
-          <div class="form-group full" style="margin-bottom:1.25rem">
-            <label>Card Type *</label>
-            <div class="type-selector">
-              <label class="type-option selected" onclick="selectCardType('VIRTUAL', this)">
-                <input type="radio" name="cardType" value="VIRTUAL" checked />
-                <span class="icon">💳</span>
-                <div class="label">Virtual Card</div>
-                <div class="sub">Instant · Online use</div>
-              </label>
-              <label class="type-option" onclick="selectCardType('PHYSICAL', this)">
-                <input type="radio" name="cardType" value="PHYSICAL" />
-                <span class="icon">📦</span>
-                <div class="label">Physical Card</div>
-                <div class="sub">Delivered in 5–7 days</div>
-              </label>
-            </div>
+          <div class="step-heading">Choose your card</div>
+          <div class="step-subheading">Both cards have no annual fee.</div>
+
+          <div class="type-selector">
+            <label class="type-option selected" onclick="selectCardType('VIRTUAL', this)">
+              <input type="radio" name="cardType" value="VIRTUAL" checked />
+              <div class="check">✓</div>
+              <span class="icon">💳</span>
+              <div class="label">Virtual</div>
+              <div class="sub">Ready instantly</div>
+            </label>
+            <label class="type-option" onclick="selectCardType('PHYSICAL', this)">
+              <input type="radio" name="cardType" value="PHYSICAL" />
+              <div class="check">✓</div>
+              <span class="icon">📦</span>
+              <div class="label">Physical</div>
+              <div class="sub">Delivered in 5–7 days</div>
+            </label>
           </div>
 
           <div id="shippingSection">
             <h3>Shipping Address</h3>
             <div class="form-grid">
               <div class="form-group full">
-                <label for="shipLine1">Address Line 1 *</label>
+                <label for="shipLine1">Address Line 1</label>
                 <input id="shipLine1" type="text" placeholder="123 Main St" />
               </div>
               <div class="form-group">
-                <label for="shipCity">City *</label>
+                <label for="shipCity">City</label>
                 <input id="shipCity" type="text" placeholder="New York" />
               </div>
               <div class="form-group">
-                <label for="shipState">State *</label>
+                <label for="shipState">State</label>
                 <input id="shipState" type="text" placeholder="NY" maxlength="2" />
               </div>
               <div class="form-group">
-                <label for="shipPostal">Postal Code *</label>
+                <label for="shipPostal">Postal Code</label>
                 <input id="shipPostal" type="text" placeholder="10001" />
               </div>
               <div class="form-group">
@@ -603,18 +998,16 @@
           <div id="applyAlert" class="alert"></div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="applyNext(2)">← Back</button>
-            <button type="submit" class="btn btn-accent" id="submitBtn">
-              Submit Application
-            </button>
+            <button type="button" class="btn btn-ghost" onclick="applyNext(2)">← Back</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Get My Card</button>
           </div>
         </div>
 
         <!-- Step 4: Success -->
         <div id="applyStep4" style="display:none">
           <div id="applySuccess"></div>
-          <div class="form-actions" style="justify-content:center; margin-top:1.5rem">
-            <button type="button" class="btn btn-outline" onclick="showPage('manage', document.querySelector('nav button:last-child'))">
+          <div style="display:flex;justify-content:center;gap:.75rem;margin-top:2rem;flex-wrap:wrap">
+            <button type="button" class="btn btn-ghost" onclick="showPage('manage', document.querySelector('nav button:last-child'))">
               Manage My Cards →
             </button>
             <button type="button" class="btn btn-primary" onclick="resetApplyForm()">Apply for Another</button>
@@ -627,28 +1020,24 @@
 
   <!-- ══════════════ MANAGE PAGE ══════════════ -->
   <div id="page-manage" class="page">
+    <div class="manage-page-wrap">
 
-    <!-- Lookup -->
-    <div class="panel">
-      <h2>My Cards</h2>
-
-      <div class="lookup-row">
-        <div class="form-group">
-          <label for="accountIdInput">Account ID</label>
-          <input id="accountIdInput" type="text" placeholder="Paste your account UUID…" />
+      <div class="panel">
+        <h2>My Cards</h2>
+        <div class="lookup-row">
+          <div class="form-group">
+            <label for="accountIdInput">Account ID</label>
+            <input id="accountIdInput" type="text" placeholder="Paste your account UUID…" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadCards()" id="loadBtn">Load</button>
         </div>
-        <button class="btn btn-primary" onclick="loadCards()" id="loadBtn">Load Cards</button>
+        <div id="manageAlert" class="alert" style="margin-top:.75rem"></div>
       </div>
 
-      <div id="manageAlert" class="alert" style="margin-top:.75rem"></div>
+      <div id="accountLimitsContainer"></div>
+      <div id="cardsContainer"></div>
+
     </div>
-
-    <!-- Account-level spending limits (rendered dynamically) -->
-    <div id="accountLimitsContainer"></div>
-
-    <!-- Cards grid (rendered dynamically) -->
-    <div id="cardsContainer"></div>
-
   </div>
 
 </main>
@@ -678,54 +1067,44 @@
   }
 
   /* ════════════════════════════════════════
-     Helpers — cents ↔ dollars
+     Cents ↔ dollars
   ═════════════════════════════════════════ */
   const toDollars = cents => cents == null ? '' : String(Math.round(cents / 100));
-  const toCents   = dollars => {
-    const n = parseFloat(dollars);
-    return isNaN(n) || dollars === '' ? null : Math.round(n * 100);
-  };
-  const fmtDollars = cents => cents == null ? '—' : `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  const toCents   = dollars => { const n = parseFloat(dollars); return isNaN(n) || dollars === '' ? null : Math.round(n * 100); };
 
   /* ════════════════════════════════════════
-     MCC state & helpers
+     MCC state
   ═════════════════════════════════════════ */
-  /* Common MCC codes for quick-block presets */
   const MCC_PRESETS = [
     { code: '7995', label: '🎰 Gambling' },
     { code: '5812', label: '🍽 Restaurants' },
     { code: '5411', label: '🛒 Groceries' },
-    { code: '5541', label: '⛽ Gas Stations' },
+    { code: '5541', label: '⛽ Gas' },
     { code: '5912', label: '💊 Pharmacies' },
     { code: '5944', label: '💎 Jewelry' },
     { code: '7011', label: '🏨 Hotels' },
     { code: '5999', label: '🛍 Misc Retail' },
   ];
 
-  /* account-level blocked MCCs — Set of 4-digit strings */
   let acctMccBlocks = new Set();
-
-  /* per-card blocked MCCs — Map<cardId, Set<string>> */
   const cardMccBlocksMap = {};
 
   function mccSectionHTML(nsPrefix, blocks) {
     const presetBtns = MCC_PRESETS.map(p =>
       `<button type="button" class="mcc-preset" onclick="addMcc('${nsPrefix}','${p.code}')">${p.label} <span style="opacity:.6;font-family:monospace">${p.code}</span></button>`
     ).join('');
-
     const tags = [...blocks].map(code =>
       `<span class="mcc-tag">${code}<button type="button" onclick="removeMcc('${nsPrefix}','${code}')" title="Remove">✕</button></span>`
     ).join('');
-
     return `
       <div class="mcc-section">
         <div class="mcc-section-title">🚫 MCC Block List</div>
-        <div class="mcc-tags" id="mcc-tags-${nsPrefix}">${tags || '<span style="font-size:.75rem;color:var(--text-lt)">No codes blocked</span>'}</div>
+        <div class="mcc-tags" id="mcc-tags-${nsPrefix}">${tags || '<span style="font-size:.75rem;color:var(--apple-gray)">No codes blocked</span>'}</div>
         <div class="mcc-add-row">
           <input id="mcc-input-${nsPrefix}" type="text" maxlength="4" placeholder="0000"
             oninput="this.value=this.value.replace(/\\D/g,'')"
             onkeydown="if(event.key==='Enter'){event.preventDefault();addMcc('${nsPrefix}')}" />
-          <button type="button" class="btn btn-sm btn-block" onclick="addMcc('${nsPrefix}')">+ Block MCC</button>
+          <button type="button" class="btn btn-sm btn-block" onclick="addMcc('${nsPrefix}')">+ Block</button>
         </div>
         <div class="mcc-presets">${presetBtns}</div>
       </div>`;
@@ -733,9 +1112,8 @@
 
   function addMcc(nsPrefix, code) {
     const input = document.getElementById(`mcc-input-${nsPrefix}`);
-    const val   = (code ?? input.value).trim().padStart(4, '0');
-    if (!/^\d{4}$/.test(val)) { input.focus(); return; }
-
+    const val = (code ?? input.value).trim().padStart(4, '0');
+    if (!/^\d{4}$/.test(val)) { input?.focus(); return; }
     const set = nsPrefix === 'acct' ? acctMccBlocks : (cardMccBlocksMap[nsPrefix] ??= new Set());
     set.add(val);
     if (!code) input.value = '';
@@ -752,7 +1130,7 @@
     if (!el) return;
     el.innerHTML = [...set].map(code =>
       `<span class="mcc-tag">${code}<button type="button" onclick="removeMcc('${nsPrefix}','${code}')" title="Remove">✕</button></span>`
-    ).join('') || '<span style="font-size:.75rem;color:var(--text-lt)">No codes blocked</span>';
+    ).join('') || '<span style="font-size:.75rem;color:var(--apple-gray)">No codes blocked</span>';
   }
 
   /* ════════════════════════════════════════
@@ -767,7 +1145,7 @@
   }
 
   /* ════════════════════════════════════════
-     Apply form — multi-step
+     Apply — multi-step
   ═════════════════════════════════════════ */
   let currentStep = 1;
   let selectedCardType = 'VIRTUAL';
@@ -782,8 +1160,15 @@
       el.classList.remove('active', 'done');
       if (i < step) el.classList.add('done');
       if (i === step) el.classList.add('active');
+
+      const dot = el.querySelector('.apple-step-dot');
+      if (i < step) dot.textContent = '✓';
+      else dot.textContent = i;
+
+      // Update connectors
+      const conn = document.getElementById(`conn${i}`);
+      if (conn) conn.classList.toggle('done', i < step);
     }
-    document.querySelectorAll('.step.done .step-dot').forEach(d => { if (!d.textContent.includes('✓')) d.textContent = '✓'; });
     currentStep = step;
   }
 
@@ -819,9 +1204,7 @@
   function resetApplyForm() {
     document.getElementById('applyForm').reset();
     selectedCardType = 'VIRTUAL';
-    document.querySelectorAll('.type-option').forEach((o, i) => {
-      o.classList.toggle('selected', i === 0);
-    });
+    document.querySelectorAll('.type-option').forEach((o, i) => o.classList.toggle('selected', i === 0));
     document.getElementById('shippingSection').classList.remove('visible');
     applyNext(1);
   }
@@ -849,48 +1232,27 @@
       const postalCode   = document.getElementById('postalCode').value.trim();
       const country      = (document.getElementById('country').value.trim() || 'US').toUpperCase().slice(0,2);
 
-      /* Step 1: Create account */
-      const accountBody = {
-        externalRef: `APP-${email}`,
-        firstName, lastName, email,
-        creditLimitCents: 500000,
-        currency: 'USD',
-        ...(phone        && { phone }),
-        ...(dob          && { dateOfBirth: dob }),
-        ...(addressLine1 && { addressLine1 }),
-        ...(addressLine2 && { addressLine2 }),
-        ...(city         && { city }),
-        ...(state        && { state }),
-        ...(postalCode   && { postalCode }),
-        ...(country      && { country }),
-      };
-
       let account;
       try {
-        account = await apiFetch('/accounts', { method: 'POST', body: JSON.stringify(accountBody) });
+        account = await apiFetch('/accounts', { method: 'POST', body: JSON.stringify({
+          externalRef: `APP-${email}`, firstName, lastName, email,
+          creditLimitCents: 500000, currency: 'USD',
+          ...(phone && { phone }), ...(dob && { dateOfBirth: dob }),
+          ...(addressLine1 && { addressLine1 }), ...(addressLine2 && { addressLine2 }),
+          ...(city && { city }), ...(state && { state }),
+          ...(postalCode && { postalCode }), ...(country && { country }),
+        })});
       } catch (err) {
         if (err.status === 409) {
-          showAlert('applyAlert', 'An account with this email already exists. Go to "Manage Cards" to view your cards.', 'error');
-          btn.disabled = false;
-          btn.textContent = 'Submit Application';
-          return;
+          showAlert('applyAlert', 'An account with this email already exists. Go to Manage Cards to view your cards.', 'error');
+          btn.disabled = false; btn.textContent = 'Get My Card'; return;
         }
         throw err;
       }
 
-      /* Step 2: Verify KYC */
-      await apiFetch(`/accounts/${account.id}/kyc`, {
-        method: 'PATCH',
-        body: JSON.stringify({ kycStatus: 'VERIFIED' }),
-      });
+      await apiFetch(`/accounts/${account.id}/kyc`, { method: 'PATCH', body: JSON.stringify({ kycStatus: 'VERIFIED' }) });
+      await apiFetch(`/accounts/${account.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) });
 
-      /* Step 3: Activate account */
-      await apiFetch(`/accounts/${account.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status: 'ACTIVE' }),
-      });
-
-      /* Step 4: Create card */
       const cardBody = {
         type: selectedCardType,
         cardholderName: `${firstName} ${lastName}`,
@@ -904,62 +1266,61 @@
           },
         }),
       };
-      const card = await apiFetch(`/accounts/${account.id}/cards`, {
-        method: 'POST',
-        body: JSON.stringify(cardBody),
-      });
+      const card = await apiFetch(`/accounts/${account.id}/cards`, { method: 'POST', body: JSON.stringify(cardBody) });
 
-      /* Save to localStorage */
       localStorage.setItem('cam_accountId', account.id);
       localStorage.setItem('cam_accountEmail', email);
 
-      /* Show success card */
       renderSuccessCard(card, account);
       applyNext(4);
-
     } catch (err) {
       showAlert('applyAlert', err.message || 'Something went wrong. Please try again.', 'error');
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Submit Application';
+      btn.textContent = 'Get My Card';
     }
   });
 
   function renderSuccessCard(card, account) {
-    const lockBadge    = card.isLocked ? '🔒 Locked' : '🔓 Unlocked';
-    const statusClass  = card.status === 'ACTIVE' ? '✅ Active' : '⏳ Pending Activation';
+    const isActive = card.status === 'ACTIVE';
     document.getElementById('applySuccess').innerHTML = `
-      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#166534;font-weight:600;">
-        🎉 Your application was approved! Your card is ready.
-      </div>
-      <div class="success-card">
-        <h3>${card.type === 'VIRTUAL' ? 'Virtual Credit Card' : 'Physical Credit Card'}</h3>
-        <div class="pan">${card.maskedPan}</div>
-        <div class="meta">
-          <div class="meta-item">
-            <span class="key">Cardholder</span>
-            <span class="val">${card.cardholderName}</span>
+      <div class="success-wrap">
+        <div class="success-badge">✓ &nbsp;You're approved</div>
+
+        <div class="apple-card">
+          <div class="ac-logo">CAM</div>
+          <div class="ac-type-badge">${card.type}</div>
+          <div class="ac-chip"></div>
+          <div class="ac-pan">${card.maskedPan}</div>
+          <div class="ac-name">${card.cardholderName}</div>
+          <div class="ac-expiry">${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
+          <div class="ac-network"><span></span><span></span></div>
+        </div>
+
+        <div class="success-meta">
+          <div class="success-meta-item">
+            <div class="smk">Network</div>
+            <div class="smv">${card.network}</div>
           </div>
-          <div class="meta-item">
-            <span class="key">Expires</span>
-            <span class="val">${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</span>
+          <div class="success-meta-item">
+            <div class="smk">Credit Limit</div>
+            <div class="smv">$5,000</div>
           </div>
-          <div class="meta-item">
-            <span class="key">Network</span>
-            <span class="val">${card.network}</span>
-          </div>
-          <div class="meta-item">
-            <span class="key">Credit Limit</span>
-            <span class="val">$5,000.00</span>
+          <div class="success-meta-item">
+            <div class="smk">Annual Fee</div>
+            <div class="smv">$0</div>
           </div>
         </div>
-        <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
-          <span class="chip">${statusClass}</span>
-          <span class="chip">${lockBadge}</span>
+
+        <div class="success-chips">
+          <span class="chip green">${isActive ? '✓ Active' : '⏳ Pending Activation'}</span>
+          <span class="chip">${card.isLocked ? '🔒 Locked' : '🔓 Unlocked'}</span>
+          <span class="chip">${card.type === 'VIRTUAL' ? '⚡ Instant' : '📦 Ships in 5–7 days'}</span>
         </div>
-      </div>
-      <div style="margin-top:.75rem;font-size:.8rem;color:var(--text-lt)">
-        Account ID: <code style="background:#f1f5f9;padding:.15rem .4rem;border-radius:4px">${account.id}</code>
+
+        <div class="account-id-note">
+          Account ID: <code>${account.id}</code>
+        </div>
       </div>
     `;
   }
@@ -969,10 +1330,7 @@
   ═════════════════════════════════════════ */
   function autoLoadCards() {
     const stored = localStorage.getItem('cam_accountId');
-    if (stored) {
-      document.getElementById('accountIdInput').value = stored;
-      loadCards();
-    }
+    if (stored) { document.getElementById('accountIdInput').value = stored; loadCards(); }
   }
 
   async function loadCards() {
@@ -987,28 +1345,22 @@
     try {
       const [cardsResult, limitsResult] = await Promise.all([
         apiFetch(`/accounts/${accountId}/cards`),
-        apiFetch(`/accounts/${accountId}/limits`).catch(() => ({ data: [] })),
+        apiFetch(`/accounts/${accountId}/limits`).catch(() => ({ limits: [] })),
       ]);
-
-      const cards  = cardsResult.data ?? [];
-      const limits = limitsResult.data ?? [];
       localStorage.setItem('cam_accountId', accountId);
-
-      renderAccountLimitsPanel(accountId, limits);
-      renderCardTiles(cards, accountId);
+      renderAccountLimitsPanel(accountId, limitsResult.limits ?? []);
+      renderCardTiles(cardsResult.data ?? [], accountId);
     } catch (err) {
       showAlert('manageAlert', err.message, 'error');
       document.getElementById('cardsContainer').innerHTML = '';
       document.getElementById('accountLimitsContainer').innerHTML = '';
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Load Cards';
+      btn.textContent = 'Load';
     }
   }
 
-  /* ════════════════════════════════════════
-     Account Limits Panel
-  ═════════════════════════════════════════ */
+  /* Account limits panel */
   function renderAccountLimitsPanel(accountId, limits) {
     const byType = {};
     acctMccBlocks = new Set();
@@ -1017,102 +1369,64 @@
       else byType[l.limitType] = l.valueCents;
     });
 
-    const daily  = toDollars(byType['DAILY']);
-    const monthly= toDollars(byType['MONTHLY']);
-    const txn    = toDollars(byType['PER_TRANSACTION']);
-
     document.getElementById('accountLimitsContainer').innerHTML = `
       <div class="panel">
         <div class="panel-header">
           <h2>Account Spending Limits</h2>
-          <span style="font-size:.78rem;color:var(--text-lt)">Applies to all cards on this account</span>
+          <span style="font-size:.75rem;color:var(--apple-gray)">Applies to all cards</span>
         </div>
-
         <div class="acct-limits-grid">
           <div class="acct-limit-card monthly-card">
             <div class="alc-title">📅 Monthly Spend Cap</div>
-            <input id="acct-limit-monthly" type="number" min="0" step="1"
-              placeholder="No limit" value="${monthly}" />
-            <div class="alc-hint">Total spend allowed per calendar month</div>
+            <input id="acct-limit-monthly" type="number" min="0" step="1" placeholder="No limit" value="${toDollars(byType['MONTHLY'])}" />
+            <div class="alc-hint">Total per calendar month</div>
           </div>
           <div class="acct-limit-card">
             <div class="alc-title">📆 Daily Limit</div>
-            <input id="acct-limit-daily" type="number" min="0" step="1"
-              placeholder="No limit" value="${daily}" />
+            <input id="acct-limit-daily" type="number" min="0" step="1" placeholder="No limit" value="${toDollars(byType['DAILY'])}" />
             <div class="alc-hint">Max spend per day</div>
           </div>
           <div class="acct-limit-card">
             <div class="alc-title">💳 Per-Transaction</div>
-            <input id="acct-limit-txn" type="number" min="0" step="1"
-              placeholder="No limit" value="${txn}" />
-            <div class="alc-hint">Max single transaction amount</div>
+            <input id="acct-limit-txn" type="number" min="0" step="1" placeholder="No limit" value="${toDollars(byType['PER_TRANSACTION'])}" />
+            <div class="alc-hint">Max single transaction</div>
           </div>
         </div>
-
         ${mccSectionHTML('acct', acctMccBlocks)}
-
         <div style="display:flex;align-items:center;gap:.75rem;margin-top:1rem">
-          <button class="btn btn-save btn-sm" onclick="saveAccountLimits('${accountId}')">
-            Save Account Limits
-          </button>
+          <button class="btn btn-save btn-sm" onclick="saveAccountLimits('${accountId}')">Save Limits</button>
           <span id="acct-limits-alert" class="drawer-alert"></span>
         </div>
-      </div>
-    `;
+      </div>`;
   }
 
   async function saveAccountLimits(accountId) {
     const alertEl = document.getElementById('acct-limits-alert');
     alertEl.className = 'drawer-alert';
-
     const daily   = toCents(document.getElementById('acct-limit-daily').value);
     const monthly = toCents(document.getElementById('acct-limit-monthly').value);
     const txn     = toCents(document.getElementById('acct-limit-txn').value);
-
-    const limits = [];
+    const limits  = [];
     if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
     if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
     if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
     acctMccBlocks.forEach(code => limits.push({ limitType: 'MCC_BLOCK', mccCode: code }));
-
-    if (!limits.length) {
-      alertEl.textContent = 'Enter at least one limit value or MCC block to save.';
-      alertEl.className = 'drawer-alert visible error';
-      return;
-    }
-
+    if (!limits.length) { alertEl.textContent = 'Enter at least one value.'; alertEl.className = 'drawer-alert visible error'; return; }
     try {
-      await apiFetch(`/accounts/${accountId}/limits`, {
-        method: 'PUT',
-        body: JSON.stringify({ limits }),
-      });
-      alertEl.textContent = '✓ Limits saved';
-      alertEl.className = 'drawer-alert visible success';
+      await apiFetch(`/accounts/${accountId}/limits`, { method: 'PUT', body: JSON.stringify({ limits }) });
+      alertEl.textContent = '✓ Saved'; alertEl.className = 'drawer-alert visible success';
       setTimeout(() => { alertEl.className = 'drawer-alert'; }, 3000);
-    } catch (err) {
-      alertEl.textContent = err.message;
-      alertEl.className = 'drawer-alert visible error';
-    }
+    } catch (err) { alertEl.textContent = err.message; alertEl.className = 'drawer-alert visible error'; }
   }
 
-  /* ════════════════════════════════════════
-     Card Tiles
-  ═════════════════════════════════════════ */
+  /* Card tiles */
   function renderCardTiles(cards, accountId) {
     const container = document.getElementById('cardsContainer');
     if (!cards.length) {
-      container.innerHTML = `
-        <div class="panel">
-          <div class="empty">
-            <div class="icon">💳</div>
-            <p>No cards found for this account.</p>
-          </div>
-        </div>`;
+      container.innerHTML = `<div class="panel"><div class="empty"><div class="icon">💳</div><p>No cards found for this account.</p></div></div>`;
       return;
     }
-
-    const html = cards.map(card => buildCardTileHTML(card, accountId)).join('');
-    container.innerHTML = `<div class="cards-grid">${html}</div>`;
+    container.innerHTML = `<div class="cards-grid">${cards.map(c => buildCardTileHTML(c, accountId)).join('')}</div>`;
   }
 
   function buildCardTileHTML(card, accountId) {
@@ -1124,21 +1438,17 @@
       CLOSED:             '<span class="badge badge-closed">Closed</span>',
     }[card.status] ?? `<span class="badge">${card.status}</span>`;
 
-    const lockBadge = card.isLocked
-      ? '<span class="badge badge-locked">🔒 Locked</span>'
-      : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
-
+    const lockBadge     = card.isLocked ? '<span class="badge badge-locked">🔒 Locked</span>' : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
     const isClosed      = card.status === 'CLOSED';
     const lockDisabled  = isClosed || card.isLocked  ? 'disabled' : '';
     const unlockDisabled= isClosed || !card.isLocked ? 'disabled' : '';
+    const isVirtual     = card.type === 'VIRTUAL';
 
-    /* Build limits drawer — virtual cards show monthly prominently */
-    const isVirtual = card.type === 'VIRTUAL';
     const monthlyHighlight = isVirtual ? `
       <div class="limit-highlight">
         <div class="highlight-title">📅 Monthly Spend Cap (virtual card)</div>
         <div class="limit-row">
-          <label>Monthly limit</label>
+          <label>Monthly</label>
           <input id="climit-monthly-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
           <span class="limit-unit">USD</span>
         </div>
@@ -1161,13 +1471,11 @@
         <div class="expiry">Expires ${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
         <div class="status-row">${statusBadge}${lockBadge}</div>
         <div class="tile-actions">
-          ${card.status === 'PENDING_ACTIVATION' ? `<button class="btn btn-sm btn-accent" onclick="cardAction('${card.id}', 'activate', '${accountId}')">✓ Activate</button>` : ''}
-          <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}', 'lock',   '${accountId}')">🔒 Lock</button>
-          <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}', 'unlock', '${accountId}')">🔓 Unlock</button>
+          ${card.status === 'PENDING_ACTIVATION' ? `<button class="btn btn-sm btn-primary" onclick="cardAction('${card.id}','activate','${accountId}')">✓ Activate</button>` : ''}
+          <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}','lock','${accountId}')">🔒 Lock</button>
+          <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}','unlock','${accountId}')">🔓 Unlock</button>
           ${!isClosed ? `<button class="btn btn-sm btn-limits" onclick="toggleCardLimits('${card.id}')">⚙ Limits</button>` : ''}
         </div>
-
-        <!-- Limits drawer -->
         <div class="limits-drawer" id="limits-drawer-${card.id}">
           <h4>Card Spending Limits</h4>
           ${monthlyHighlight}
@@ -1182,13 +1490,12 @@
             <input id="climit-txn-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
             <span class="limit-unit">USD</span>
           </div>
-          <div id="mcc-section-${card.id}"><!-- MCC section injected on open --></div>
+          <div id="mcc-section-${card.id}"></div>
           <div class="drawer-actions">
             <button class="btn btn-save btn-sm" onclick="saveCardLimits('${card.id}')">Save Limits</button>
             <span id="card-limits-alert-${card.id}" class="drawer-alert"></span>
           </div>
         </div>
-
         <div id="tile-alert-${card.id}" class="alert" style="margin-top:.6rem;padding:.5rem .75rem;font-size:.8rem"></div>
       </div>`;
   }
@@ -1196,90 +1503,55 @@
   async function toggleCardLimits(cardId) {
     const drawer = document.getElementById(`limits-drawer-${cardId}`);
     const isOpen = drawer.classList.contains('open');
-    if (isOpen) {
-      drawer.classList.remove('open');
-      return;
-    }
+    if (isOpen) { drawer.classList.remove('open'); return; }
     drawer.classList.add('open');
-    /* Load existing limits once drawer is opened */
     try {
       const result = await apiFetch(`/cards/${cardId}/limits`);
-      const limits = result.data ?? [];
+      const limits = result.limits ?? [];
       const byType = {};
       cardMccBlocksMap[cardId] = new Set();
       limits.forEach(l => {
         if (l.limitType === 'MCC_BLOCK' && l.mccCode) cardMccBlocksMap[cardId].add(l.mccCode);
         else byType[l.limitType] = l.valueCents;
       });
-
       const daily   = document.getElementById(`climit-daily-${cardId}`);
       const monthly = document.getElementById(`climit-monthly-${cardId}`);
       const txn     = document.getElementById(`climit-txn-${cardId}`);
-
       if (daily)   daily.value   = toDollars(byType['DAILY']);
       if (monthly) monthly.value = toDollars(byType['MONTHLY']);
       if (txn)     txn.value     = toDollars(byType['PER_TRANSACTION']);
-
-      /* Inject MCC section */
-      document.getElementById(`mcc-section-${cardId}`).innerHTML =
-        mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
+      document.getElementById(`mcc-section-${cardId}`).innerHTML = mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
     } catch (_) {
-      /* silently ignore — fields will be empty (no limits set) */
       cardMccBlocksMap[cardId] = new Set();
-      document.getElementById(`mcc-section-${cardId}`).innerHTML =
-        mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
+      document.getElementById(`mcc-section-${cardId}`).innerHTML = mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
     }
   }
 
   async function saveCardLimits(cardId) {
     const alertEl = document.getElementById(`card-limits-alert-${cardId}`);
     alertEl.className = 'drawer-alert';
-
-    const dailyEl   = document.getElementById(`climit-daily-${cardId}`);
-    const monthlyEl = document.getElementById(`climit-monthly-${cardId}`);
-    const txnEl     = document.getElementById(`climit-txn-${cardId}`);
-
-    const daily   = toCents(dailyEl?.value);
-    const monthly = toCents(monthlyEl?.value);
-    const txn     = toCents(txnEl?.value);
-
-    const limits = [];
+    const daily   = toCents(document.getElementById(`climit-daily-${cardId}`)?.value);
+    const monthly = toCents(document.getElementById(`climit-monthly-${cardId}`)?.value);
+    const txn     = toCents(document.getElementById(`climit-txn-${cardId}`)?.value);
+    const limits  = [];
     if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
     if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
     if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
-    (cardMccBlocksMap[cardId] ?? []).forEach(code =>
-      limits.push({ limitType: 'MCC_BLOCK', mccCode: code })
-    );
-
-    if (!limits.length) {
-      alertEl.textContent = 'Enter at least one limit or MCC block to save.';
-      alertEl.className = 'drawer-alert visible error';
-      return;
-    }
-
+    (cardMccBlocksMap[cardId] ?? []).forEach(code => limits.push({ limitType: 'MCC_BLOCK', mccCode: code }));
+    if (!limits.length) { alertEl.textContent = 'Enter at least one value.'; alertEl.className = 'drawer-alert visible error'; return; }
     try {
-      await apiFetch(`/cards/${cardId}/limits`, {
-        method: 'PUT',
-        body: JSON.stringify({ limits }),
-      });
-      alertEl.textContent = '✓ Card limits saved';
-      alertEl.className = 'drawer-alert visible success';
+      await apiFetch(`/cards/${cardId}/limits`, { method: 'PUT', body: JSON.stringify({ limits }) });
+      alertEl.textContent = '✓ Card limits saved'; alertEl.className = 'drawer-alert visible success';
       setTimeout(() => { alertEl.className = 'drawer-alert'; }, 3000);
-    } catch (err) {
-      alertEl.textContent = err.message;
-      alertEl.className = 'drawer-alert visible error';
-    }
+    } catch (err) { alertEl.textContent = err.message; alertEl.className = 'drawer-alert visible error'; }
   }
 
   async function cardAction(cardId, action, accountId) {
     const tile    = document.getElementById(`tile-${cardId}`);
     const btns    = tile.querySelectorAll('button');
     const alertEl = document.getElementById(`tile-alert-${cardId}`);
-
     btns.forEach(b => b.disabled = true);
-    alertEl.className = 'alert';
-    alertEl.textContent = '';
-
+    alertEl.className = 'alert'; alertEl.textContent = '';
     try {
       await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST', body: '{}' });
       await loadCards();
@@ -1295,13 +1567,11 @@
   ═════════════════════════════════════════ */
   function showAlert(id, msg, type) {
     const el = document.getElementById(id);
-    el.textContent = msg;
-    el.className = `alert alert-${type} visible`;
+    el.textContent = msg; el.className = `alert alert-${type} visible`;
   }
   function clearAlert(id) {
     const el = document.getElementById(id);
-    el.className = 'alert';
-    el.textContent = '';
+    el.className = 'alert'; el.textContent = '';
   }
 </script>
 
