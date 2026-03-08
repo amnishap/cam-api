@@ -361,6 +361,78 @@
       margin-top: .3rem;
     }
 
+    /* ─── MCC block controls ─── */
+    .mcc-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1.5px solid var(--border);
+    }
+    .mcc-section-title {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--text-lt);
+      margin-bottom: .6rem;
+    }
+    .mcc-add-row {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      margin-bottom: .6rem;
+    }
+    .mcc-add-row input {
+      width: 80px;
+      padding: .38rem .55rem;
+      font-size: .85rem;
+      border-radius: 6px;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+    .btn-block { background: #fff0f0; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .mcc-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; min-height: 1.5rem; }
+    .mcc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+      border-radius: 5px;
+      padding: .2rem .45rem;
+      font-size: .75rem;
+      font-weight: 600;
+      font-family: monospace;
+    }
+    .mcc-tag button {
+      background: none;
+      border: none;
+      color: #991b1b;
+      cursor: pointer;
+      font-size: .8rem;
+      line-height: 1;
+      padding: 0;
+      opacity: .7;
+    }
+    .mcc-tag button:hover { opacity: 1; }
+    .mcc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      margin-top: .4rem;
+    }
+    .mcc-preset {
+      font-size: .7rem;
+      padding: .2rem .5rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .mcc-preset:hover { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+
     /* ─── Lookup ─── */
     .lookup-row { display: flex; gap: .75rem; align-items: flex-end; }
     .lookup-row .form-group { flex: 1; }
@@ -614,6 +686,74 @@
     return isNaN(n) || dollars === '' ? null : Math.round(n * 100);
   };
   const fmtDollars = cents => cents == null ? '—' : `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+  /* ════════════════════════════════════════
+     MCC state & helpers
+  ═════════════════════════════════════════ */
+  /* Common MCC codes for quick-block presets */
+  const MCC_PRESETS = [
+    { code: '7995', label: '🎰 Gambling' },
+    { code: '5812', label: '🍽 Restaurants' },
+    { code: '5411', label: '🛒 Groceries' },
+    { code: '5541', label: '⛽ Gas Stations' },
+    { code: '5912', label: '💊 Pharmacies' },
+    { code: '5944', label: '💎 Jewelry' },
+    { code: '7011', label: '🏨 Hotels' },
+    { code: '5999', label: '🛍 Misc Retail' },
+  ];
+
+  /* account-level blocked MCCs — Set of 4-digit strings */
+  let acctMccBlocks = new Set();
+
+  /* per-card blocked MCCs — Map<cardId, Set<string>> */
+  const cardMccBlocksMap = {};
+
+  function mccSectionHTML(nsPrefix, blocks) {
+    const presetBtns = MCC_PRESETS.map(p =>
+      `<button type="button" class="mcc-preset" onclick="addMcc('${nsPrefix}','${p.code}')">${p.label} <span style="opacity:.6;font-family:monospace">${p.code}</span></button>`
+    ).join('');
+
+    const tags = [...blocks].map(code =>
+      `<span class="mcc-tag">${code}<button type="button" onclick="removeMcc('${nsPrefix}','${code}')" title="Remove">✕</button></span>`
+    ).join('');
+
+    return `
+      <div class="mcc-section">
+        <div class="mcc-section-title">🚫 MCC Block List</div>
+        <div class="mcc-tags" id="mcc-tags-${nsPrefix}">${tags || '<span style="font-size:.75rem;color:var(--text-lt)">No codes blocked</span>'}</div>
+        <div class="mcc-add-row">
+          <input id="mcc-input-${nsPrefix}" type="text" maxlength="4" placeholder="0000"
+            oninput="this.value=this.value.replace(/\\D/g,'')"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();addMcc('${nsPrefix}')}" />
+          <button type="button" class="btn btn-sm btn-block" onclick="addMcc('${nsPrefix}')">+ Block MCC</button>
+        </div>
+        <div class="mcc-presets">${presetBtns}</div>
+      </div>`;
+  }
+
+  function addMcc(nsPrefix, code) {
+    const input = document.getElementById(`mcc-input-${nsPrefix}`);
+    const val   = (code ?? input.value).trim().padStart(4, '0');
+    if (!/^\d{4}$/.test(val)) { input.focus(); return; }
+
+    const set = nsPrefix === 'acct' ? acctMccBlocks : (cardMccBlocksMap[nsPrefix] ??= new Set());
+    set.add(val);
+    if (!code) input.value = '';
+    refreshMccTags(nsPrefix, set);
+  }
+
+  function removeMcc(nsPrefix, code) {
+    const set = nsPrefix === 'acct' ? acctMccBlocks : cardMccBlocksMap[nsPrefix];
+    if (set) { set.delete(code); refreshMccTags(nsPrefix, set); }
+  }
+
+  function refreshMccTags(nsPrefix, set) {
+    const el = document.getElementById(`mcc-tags-${nsPrefix}`);
+    if (!el) return;
+    el.innerHTML = [...set].map(code =>
+      `<span class="mcc-tag">${code}<button type="button" onclick="removeMcc('${nsPrefix}','${code}')" title="Remove">✕</button></span>`
+    ).join('') || '<span style="font-size:.75rem;color:var(--text-lt)">No codes blocked</span>';
+  }
 
   /* ════════════════════════════════════════
      Page routing
@@ -871,7 +1011,11 @@
   ═════════════════════════════════════════ */
   function renderAccountLimitsPanel(accountId, limits) {
     const byType = {};
-    (limits || []).forEach(l => { byType[l.limitType] = l.valueCents; });
+    acctMccBlocks = new Set();
+    (limits || []).forEach(l => {
+      if (l.limitType === 'MCC_BLOCK' && l.mccCode) acctMccBlocks.add(l.mccCode);
+      else byType[l.limitType] = l.valueCents;
+    });
 
     const daily  = toDollars(byType['DAILY']);
     const monthly= toDollars(byType['MONTHLY']);
@@ -905,7 +1049,9 @@
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:.75rem">
+        ${mccSectionHTML('acct', acctMccBlocks)}
+
+        <div style="display:flex;align-items:center;gap:.75rem;margin-top:1rem">
           <button class="btn btn-save btn-sm" onclick="saveAccountLimits('${accountId}')">
             Save Account Limits
           </button>
@@ -927,9 +1073,10 @@
     if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
     if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
     if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
+    acctMccBlocks.forEach(code => limits.push({ limitType: 'MCC_BLOCK', mccCode: code }));
 
     if (!limits.length) {
-      alertEl.textContent = 'Enter at least one limit value to save.';
+      alertEl.textContent = 'Enter at least one limit value or MCC block to save.';
       alertEl.className = 'drawer-alert visible error';
       return;
     }
@@ -1034,6 +1181,7 @@
             <input id="climit-txn-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
             <span class="limit-unit">USD</span>
           </div>
+          <div id="mcc-section-${card.id}"><!-- MCC section injected on open --></div>
           <div class="drawer-actions">
             <button class="btn btn-save btn-sm" onclick="saveCardLimits('${card.id}')">Save Limits</button>
             <span id="card-limits-alert-${card.id}" class="drawer-alert"></span>
@@ -1057,7 +1205,11 @@
       const result = await apiFetch(`/cards/${cardId}/limits`);
       const limits = result.data ?? [];
       const byType = {};
-      limits.forEach(l => { byType[l.limitType] = l.valueCents; });
+      cardMccBlocksMap[cardId] = new Set();
+      limits.forEach(l => {
+        if (l.limitType === 'MCC_BLOCK' && l.mccCode) cardMccBlocksMap[cardId].add(l.mccCode);
+        else byType[l.limitType] = l.valueCents;
+      });
 
       const daily   = document.getElementById(`climit-daily-${cardId}`);
       const monthly = document.getElementById(`climit-monthly-${cardId}`);
@@ -1066,8 +1218,15 @@
       if (daily)   daily.value   = toDollars(byType['DAILY']);
       if (monthly) monthly.value = toDollars(byType['MONTHLY']);
       if (txn)     txn.value     = toDollars(byType['PER_TRANSACTION']);
+
+      /* Inject MCC section */
+      document.getElementById(`mcc-section-${cardId}`).innerHTML =
+        mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
     } catch (_) {
       /* silently ignore — fields will be empty (no limits set) */
+      cardMccBlocksMap[cardId] = new Set();
+      document.getElementById(`mcc-section-${cardId}`).innerHTML =
+        mccSectionHTML(cardId, cardMccBlocksMap[cardId]);
     }
   }
 
@@ -1087,9 +1246,12 @@
     if (daily   != null) limits.push({ limitType: 'DAILY',           valueCents: daily });
     if (monthly != null) limits.push({ limitType: 'MONTHLY',         valueCents: monthly });
     if (txn     != null) limits.push({ limitType: 'PER_TRANSACTION', valueCents: txn });
+    (cardMccBlocksMap[cardId] ?? []).forEach(code =>
+      limits.push({ limitType: 'MCC_BLOCK', mccCode: code })
+    );
 
     if (!limits.length) {
-      alertEl.textContent = 'Enter at least one limit to save.';
+      alertEl.textContent = 'Enter at least one limit or MCC block to save.';
       alertEl.className = 'drawer-alert visible error';
       return;
     }
