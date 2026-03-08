@@ -24,3 +24,6 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Maven build output
+spring/target/
