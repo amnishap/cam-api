@@ -174,7 +174,7 @@ describe('AccountService', () => {
 
   describe('update - status transitions', () => {
     it('allows INACTIVE → ACTIVE transition', async () => {
-      db.account.findUnique.mockResolvedValue(mockAccount({ status: AccountStatus.INACTIVE }));
+      db.account.findUnique.mockResolvedValue(mockAccount({ status: AccountStatus.INACTIVE, kycStatus: KycStatus.VERIFIED }));
       db.account.update.mockResolvedValue(mockAccount({ status: AccountStatus.ACTIVE }));
 
       await service.update('acct-uuid-1', { status: AccountStatus.ACTIVE });

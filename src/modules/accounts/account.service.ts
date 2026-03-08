@@ -96,6 +96,15 @@ export class AccountService {
           'Use DELETE /accounts/:id to close an account',
         );
       }
+      // KYC gate — account can only be activated once KYC is verified
+      if (data.status === AccountStatus.ACTIVE && account.status === AccountStatus.INACTIVE) {
+        if (account.kycStatus !== KycStatus.VERIFIED) {
+          throw new BusinessRuleError(
+            'KYC_NOT_VERIFIED',
+            `Account KYC must be VERIFIED before activation (current: ${account.kycStatus})`,
+          );
+        }
+      }
     }
 
     if (data.creditLimitCents !== undefined) {

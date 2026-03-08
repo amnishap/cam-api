@@ -18,7 +18,8 @@
     "test": "jest --runInBand",
     "test:unit": "jest --runInBand --testPathPattern=unit",
     "test:integration": "jest --runInBand --testPathPattern=integration",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:bdd": "cucumber-js"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
@@ -33,6 +34,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^10.9.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",
     "@types/uuid": "^9.0.8",

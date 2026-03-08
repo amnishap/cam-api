@@ -138,5 +138,15 @@ export class LimitService {
         );
       }
     }
+
+    // Per-transaction must not exceed daily (when both are present in the same batch)
+    const daily = limits.find(l => l.limitType === LimitType.DAILY)?.valueCents;
+    const txn   = limits.find(l => l.limitType === LimitType.PER_TRANSACTION)?.valueCents;
+    if (daily != null && txn != null && txn > daily) {
+      throw new BusinessRuleError(
+        'TRANSACTION_LIMIT_EXCEEDS_DAILY_LIMIT',
+        `Per-transaction limit (${txn}) cannot exceed daily limit (${daily})`,
+      );
+    }
   }
 }
