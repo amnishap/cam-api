@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAM — Card & Account Management</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:    #1e3a5f;
+      --brand-lt: #2d5f8f;
+      --accent:   #e8a020;
+      --green:    #2d8a4e;
+      --red:      #c0392b;
+      --orange:   #d35400;
+      --grey:     #7f8c8d;
+      --bg:       #f0f4f8;
+      --card-bg:  #ffffff;
+      --border:   #dce3ea;
+      --text:     #1a2332;
+      --text-lt:  #5a6a7a;
+      --radius:   12px;
+      --shadow:   0 2px 12px rgba(0,0,0,.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─── */
+    header {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-lt) 100%);
+      color: #fff;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: .5px; }
+    header h1 span { color: var(--accent); }
+
+    nav { display: flex; gap: .5rem; }
+    nav button {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,.4);
+      color: #fff;
+      padding: .45rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .875rem;
+      transition: background .15s, border-color .15s;
+    }
+    nav button:hover, nav button.active {
+      background: rgba(255,255,255,.15);
+      border-color: rgba(255,255,255,.8);
+    }
+
+    /* ─── Layout ─── */
+    main { max-width: 860px; margin: 2.5rem auto; padding: 0 1.5rem; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── Panel ─── */
+    .panel {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--brand); }
+
+    /* ─── Form ─── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: .35rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: .8rem; font-weight: 600; color: var(--text-lt); text-transform: uppercase; letter-spacing: .4px; }
+    input, select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: .6rem .9rem;
+      font-size: .95rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .15s;
+      width: 100%;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--brand-lt); }
+
+    /* ─── Card type selector ─── */
+    .type-selector { display: flex; gap: .75rem; }
+    .type-option {
+      flex: 1;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .15s, background .15s;
+    }
+    .type-option:hover { border-color: var(--brand-lt); }
+    .type-option.selected { border-color: var(--brand); background: #eef4fc; }
+    .type-option input[type=radio] { display: none; }
+    .type-option .icon { font-size: 1.6rem; display: block; margin-bottom: .3rem; }
+    .type-option .label { font-size: .85rem; font-weight: 600; }
+    .type-option .sub { font-size: .75rem; color: var(--text-lt); margin-top: .15rem; }
+
+    /* ─── Shipping section ─── */
+    #shippingSection {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1.5px solid var(--border);
+    }
+    #shippingSection.visible { display: block; }
+    #shippingSection h3 { font-size: .9rem; font-weight: 700; color: var(--text-lt); margin-bottom: .75rem; text-transform: uppercase; letter-spacing: .4px; }
+
+    /* ─── Button ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .65rem 1.4rem;
+      border-radius: 8px;
+      border: none;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-accent  { background: var(--accent); color: #fff; }
+    .btn-outline { background: #fff; color: var(--brand); border: 1.5px solid var(--brand); }
+    .btn-sm { padding: .4rem .85rem; font-size: .8rem; }
+    .btn-lock   { background: #fff3e0; color: #b45309; border: 1.5px solid #fbbf24; }
+    .btn-unlock { background: #ecfdf5; color: #065f46; border: 1.5px solid #34d399; }
+    .btn-danger { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+
+    .form-actions { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: .75rem; }
+
+    /* ─── Alerts ─── */
+    .alert {
+      border-radius: 8px;
+      padding: .85rem 1rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      display: none;
+    }
+    .alert.visible { display: block; }
+    .alert-error   { background: #fef2f2; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .alert-success { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
+    .alert-info    { background: #eff6ff; color: #1e40af; border: 1.5px solid #93c5fd; }
+
+    /* ─── Success card ─── */
+    .success-card {
+      background: linear-gradient(135deg, var(--brand) 0%, #1a4a7a 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .success-card::before {
+      content: '';
+      position: absolute;
+      right: -40px; top: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+    }
+    .success-card::after {
+      content: '';
+      position: absolute;
+      right: 40px; bottom: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.04);
+    }
+    .success-card h3 { font-size: 1rem; opacity: .7; margin-bottom: 1rem; }
+    .success-card .pan { font-size: 1.4rem; font-family: monospace; letter-spacing: 3px; margin-bottom: 1rem; }
+    .success-card .meta { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .success-card .meta-item span { display: block; }
+    .success-card .meta-item .key { font-size: .7rem; opacity: .65; text-transform: uppercase; letter-spacing: .5px; }
+    .success-card .meta-item .val { font-size: .95rem; font-weight: 600; margin-top: .15rem; }
+    .success-card .chip { display: inline-flex; align-items: center; gap: .3rem; background: rgba(255,255,255,.15); border-radius: 6px; padding: .25rem .6rem; font-size: .75rem; font-weight: 600; margin-top: .75rem; }
+
+    /* ─── Card tiles ─── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+
+    .card-tile {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      position: relative;
+      transition: box-shadow .15s;
+    }
+    .card-tile:hover { box-shadow: var(--shadow); }
+    .card-tile.locked { border-color: #fbbf24; background: #fffbeb; }
+
+    .card-tile .tile-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .75rem; }
+    .card-tile .network { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-lt); }
+    .card-tile .type-badge {
+      font-size: .65rem; font-weight: 700; text-transform: uppercase;
+      padding: .2rem .5rem; border-radius: 5px; letter-spacing: .5px;
+    }
+    .type-badge.virtual  { background: #dbeafe; color: #1d4ed8; }
+    .type-badge.physical { background: #fce7f3; color: #9d174d; }
+
+    .card-tile .masked-pan { font-family: monospace; font-size: 1.05rem; letter-spacing: 2px; margin: .5rem 0; color: var(--text); }
+    .card-tile .expiry { font-size: .8rem; color: var(--text-lt); margin-bottom: .75rem; }
+
+    .status-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .badge {
+      font-size: .7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; padding: .2rem .55rem; border-radius: 5px;
+    }
+    .badge-active     { background: #dcfce7; color: #166534; }
+    .badge-pending    { background: #fef9c3; color: #854d0e; }
+    .badge-inactive   { background: #f1f5f9; color: #64748b; }
+    .badge-suspended  { background: #ffedd5; color: #9a3412; }
+    .badge-closed     { background: #fee2e2; color: #991b1b; }
+    .badge-locked     { background: #fef3c7; color: #92400e; }
+    .badge-unlocked   { background: #ecfdf5; color: #065f46; }
+
+    .tile-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+    /* ─── Lookup ─── */
+    .lookup-row { display: flex; gap: .75rem; align-items: flex-end; }
+    .lookup-row .form-group { flex: 1; }
+
+    /* ─── Spinner ─── */
+    .spin { display: inline-block; animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Empty state ─── */
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-lt); }
+    .empty .icon { font-size: 2.5rem; margin-bottom: .75rem; }
+
+    /* ─── Steps ─── */
+    .steps { display: flex; gap: 0; margin-bottom: 2rem; }
+    .step { flex: 1; text-align: center; position: relative; }
+    .step::after { content: ''; position: absolute; top: 14px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: 0; }
+    .step:last-child::after { display: none; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--border); color: var(--text-lt);
+      font-size: .8rem; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .step.done .step-dot  { background: var(--green); color: #fff; }
+    .step.active .step-dot { background: var(--brand); color: #fff; }
+    .step-label { font-size: .7rem; color: var(--text-lt); margin-top: .35rem; }
+    .step.active .step-label { color: var(--brand); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CAM <span>|</span> Card &amp; Account Management</h1>
+  <nav>
+    <button class="active" onclick="showPage('apply', this)">Apply for a Card</button>
+    <button onclick="showPage('manage', this)">Manage Cards</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ══════════════ APPLY PAGE ══════════════ -->
+  <div id="page-apply" class="page active">
+
+    <div class="panel">
+      <h2>Apply for a Credit Card</h2>
+
+      <!-- Progress steps -->
+      <div class="steps" id="applySteps">
+        <div class="step active" id="step1"><div class="step-dot">1</div><div class="step-label">Your Info</div></div>
+        <div class="step" id="step2"><div class="step-dot">2</div><div class="step-label">Address</div></div>
+        <div class="step" id="step3"><div class="step-dot">3</div><div class="step-label">Card Type</div></div>
+        <div class="step" id="step4"><div class="step-dot">4</div><div class="step-label">Done</div></div>
+      </div>
+
+      <form id="applyForm" novalidate>
+
+        <!-- Step 1: Personal -->
+        <div id="applyStep1">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input id="firstName" type="text" placeholder="Jane" required />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input id="lastName" type="text" placeholder="Doe" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input id="email" type="email" placeholder="jane@example.com" required />
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input id="dob" type="date" />
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input id="phone" type="tel" placeholder="+1 555 000 0000" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="applyNext(2)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Address -->
+        <div id="applyStep2" style="display:none">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="addressLine1">Address Line 1</label>
+              <input id="addressLine1" type="text" placeholder="123 Main St" />
+            </div>
+            <div class="form-group full">
+              <label for="addressLine2">Address Line 2</label>
+              <input id="addressLine2" type="text" placeholder="Apt 4B" />
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" type="text" placeholder="New York" />
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input id="state" type="text" placeholder="NY" maxlength="2" />
+            </div>
+            <div class="form-group">
+              <label for="postalCode">Postal Code</label>
+              <input id="postalCode" type="text" placeholder="10001" />
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input id="country" type="text" value="US" maxlength="2" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="applyNext(1)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="applyNext(3)">Continue →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Card Type -->
+        <div id="applyStep3" style="display:none">
+          <div class="form-group full" style="margin-bottom:1.25rem">
+            <label>Card Type *</label>
+            <div class="type-selector">
+              <label class="type-option selected" onclick="selectCardType('VIRTUAL', this)">
+                <input type="radio" name="cardType" value="VIRTUAL" checked />
+                <span class="icon">💳</span>
+                <div class="label">Virtual Card</div>
+                <div class="sub">Instant · Online use</div>
+              </label>
+              <label class="type-option" onclick="selectCardType('PHYSICAL', this)">
+                <input type="radio" name="cardType" value="PHYSICAL" />
+                <span class="icon">📦</span>
+                <div class="label">Physical Card</div>
+                <div class="sub">Delivered in 5–7 days</div>
+              </label>
+            </div>
+          </div>
+
+          <div id="shippingSection">
+            <h3>Shipping Address</h3>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="shipLine1">Address Line 1 *</label>
+                <input id="shipLine1" type="text" placeholder="123 Main St" />
+              </div>
+              <div class="form-group">
+                <label for="shipCity">City *</label>
+                <input id="shipCity" type="text" placeholder="New York" />
+              </div>
+              <div class="form-group">
+                <label for="shipState">State *</label>
+                <input id="shipState" type="text" placeholder="NY" maxlength="2" />
+              </div>
+              <div class="form-group">
+                <label for="shipPostal">Postal Code *</label>
+                <input id="shipPostal" type="text" placeholder="10001" />
+              </div>
+              <div class="form-group">
+                <label for="shipCountry">Country</label>
+                <input id="shipCountry" type="text" value="US" maxlength="2" />
+              </div>
+            </div>
+          </div>
+
+          <div id="applyAlert" class="alert"></div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="applyNext(2)">← Back</button>
+            <button type="submit" class="btn btn-accent" id="submitBtn">
+              Submit Application
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 4: Success -->
+        <div id="applyStep4" style="display:none">
+          <div id="applySuccess"></div>
+          <div class="form-actions" style="justify-content:center; margin-top:1.5rem">
+            <button type="button" class="btn btn-outline" onclick="showPage('manage', document.querySelector('nav button:last-child'))">
+              Manage My Cards →
+            </button>
+            <button type="button" class="btn btn-primary" onclick="resetApplyForm()">Apply for Another</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════ MANAGE PAGE ══════════════ -->
+  <div id="page-manage" class="page">
+
+    <div class="panel">
+      <h2>My Cards</h2>
+
+      <div class="lookup-row">
+        <div class="form-group">
+          <label for="accountIdInput">Account ID</label>
+          <input id="accountIdInput" type="text" placeholder="Paste your account UUID…" />
+        </div>
+        <button class="btn btn-primary" onclick="loadCards()" id="loadBtn">Load Cards</button>
+      </div>
+
+      <div id="manageAlert" class="alert" style="margin-top:.75rem"></div>
+    </div>
+
+    <div id="cardsContainer"></div>
+
+  </div>
+
+</main>
+
+<script>
+  /* ════════════════════════════════════════
+     Config
+  ═════════════════════════════════════════ */
+  const API_BASE = 'http://localhost:3000/api/v1';
+  const API_KEY  = 'cam-dev-secret-key-1234';
+
+  async function apiFetch(path, options = {}) {
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`,
+        ...(options.headers ?? {}),
+      },
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const msg = data?.error?.message ?? `HTTP ${res.status}`;
+      throw Object.assign(new Error(msg), { code: data?.error?.code, status: res.status });
+    }
+    return data;
+  }
+
+  /* ════════════════════════════════════════
+     Page routing
+  ═════════════════════════════════════════ */
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`page-${name}`).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'manage') autoLoadCards();
+  }
+
+  /* ════════════════════════════════════════
+     Apply form — multi-step
+  ═════════════════════════════════════════ */
+  let currentStep = 1;
+  let selectedCardType = 'VIRTUAL';
+
+  function applyNext(step) {
+    if (step > currentStep && !validateStep(currentStep)) return;
+    document.getElementById(`applyStep${currentStep}`).style.display = 'none';
+    document.getElementById(`applyStep${step}`).style.display = 'block';
+
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById(`step${i}`);
+      el.classList.remove('active', 'done');
+      if (i < step) el.classList.add('done');
+      if (i === step) el.classList.add('active');
+    }
+    // Replace number with ✓ for done steps
+    document.querySelectorAll('.step.done .step-dot').forEach(d => { if (!d.textContent.includes('✓')) d.textContent = '✓'; });
+    currentStep = step;
+  }
+
+  function validateStep(step) {
+    if (step === 1) {
+      const fn = document.getElementById('firstName').value.trim();
+      const ln = document.getElementById('lastName').value.trim();
+      const em = document.getElementById('email').value.trim();
+      if (!fn || !ln) { showAlert('applyAlert', 'First and last name are required.', 'error'); return false; }
+      if (!em || !em.includes('@')) { showAlert('applyAlert', 'A valid email address is required.', 'error'); return false; }
+    }
+    if (step === 3 && selectedCardType === 'PHYSICAL') {
+      if (!document.getElementById('shipLine1').value.trim() ||
+          !document.getElementById('shipCity').value.trim() ||
+          !document.getElementById('shipState').value.trim() ||
+          !document.getElementById('shipPostal').value.trim()) {
+        showAlert('applyAlert', 'Shipping address is required for a physical card.', 'error');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function selectCardType(type, label) {
+    selectedCardType = type;
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+    label.classList.add('selected');
+    const ship = document.getElementById('shippingSection');
+    if (type === 'PHYSICAL') ship.classList.add('visible');
+    else ship.classList.remove('visible');
+  }
+
+  function resetApplyForm() {
+    document.getElementById('applyForm').reset();
+    selectedCardType = 'VIRTUAL';
+    document.querySelectorAll('.type-option').forEach((o, i) => {
+      o.classList.toggle('selected', i === 0);
+    });
+    document.getElementById('shippingSection').classList.remove('visible');
+    applyNext(1);
+  }
+
+  /* ─── Submit ─── */
+  document.getElementById('applyForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateStep(3)) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin">⟳</span> Processing…';
+    clearAlert('applyAlert');
+
+    try {
+      const firstName   = document.getElementById('firstName').value.trim();
+      const lastName    = document.getElementById('lastName').value.trim();
+      const email       = document.getElementById('email').value.trim();
+      const dob         = document.getElementById('dob').value;
+      const phone       = document.getElementById('phone').value.trim();
+      const addressLine1= document.getElementById('addressLine1').value.trim();
+      const addressLine2= document.getElementById('addressLine2').value.trim();
+      const city        = document.getElementById('city').value.trim();
+      const state       = document.getElementById('state').value.trim();
+      const postalCode  = document.getElementById('postalCode').value.trim();
+      const country     = (document.getElementById('country').value.trim() || 'US').toUpperCase().slice(0,2);
+
+      /* Step 1: Create account */
+      const accountBody = {
+        externalRef: `APP-${email}`,
+        firstName, lastName, email,
+        creditLimitCents: 500000,
+        currency: 'USD',
+        ...(phone        && { phone }),
+        ...(dob          && { dateOfBirth: dob }),
+        ...(addressLine1 && { addressLine1 }),
+        ...(addressLine2 && { addressLine2 }),
+        ...(city         && { city }),
+        ...(state        && { state }),
+        ...(postalCode   && { postalCode }),
+        ...(country      && { country }),
+      };
+
+      let account;
+      try {
+        account = await apiFetch('/accounts', { method: 'POST', body: JSON.stringify(accountBody) });
+      } catch (err) {
+        if (err.status === 409) {
+          showAlert('applyAlert', 'An account with this email already exists. Go to "Manage Cards" to view your cards.', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Submit Application';
+          return;
+        }
+        throw err;
+      }
+
+      /* Step 2: Verify KYC */
+      await apiFetch(`/accounts/${account.id}/kyc`, {
+        method: 'PATCH',
+        body: JSON.stringify({ kycStatus: 'VERIFIED' }),
+      });
+
+      /* Step 3: Activate account */
+      await apiFetch(`/accounts/${account.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'ACTIVE' }),
+      });
+
+      /* Step 4: Create card */
+      const cardBody = {
+        type: selectedCardType,
+        cardholderName: `${firstName} ${lastName}`,
+        ...(selectedCardType === 'PHYSICAL' && {
+          shippingAddress: {
+            line1:      document.getElementById('shipLine1').value.trim(),
+            city:       document.getElementById('shipCity').value.trim(),
+            state:      document.getElementById('shipState').value.trim(),
+            postalCode: document.getElementById('shipPostal').value.trim(),
+            country:    (document.getElementById('shipCountry').value.trim() || 'US').toUpperCase().slice(0,2),
+          },
+        }),
+      };
+      const card = await apiFetch(`/accounts/${account.id}/cards`, {
+        method: 'POST',
+        body: JSON.stringify(cardBody),
+      });
+
+      /* Save to localStorage */
+      localStorage.setItem('cam_accountId', account.id);
+      localStorage.setItem('cam_accountEmail', email);
+
+      /* Show success card */
+      renderSuccessCard(card, account);
+      applyNext(4);
+
+    } catch (err) {
+      showAlert('applyAlert', err.message || 'Something went wrong. Please try again.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    }
+  });
+
+  function renderSuccessCard(card, account) {
+    const lockBadge = card.isLocked ? '🔒 Locked' : '🔓 Unlocked';
+    const statusClass = card.status === 'ACTIVE' ? '✅ Active' : '⏳ Pending Activation';
+    document.getElementById('applySuccess').innerHTML = `
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;color:#166534;font-weight:600;">
+        🎉 Your application was approved! Your card is ready.
+      </div>
+      <div class="success-card">
+        <h3>${card.type === 'VIRTUAL' ? 'Virtual Credit Card' : 'Physical Credit Card'}</h3>
+        <div class="pan">${card.maskedPan}</div>
+        <div class="meta">
+          <div class="meta-item">
+            <span class="key">Cardholder</span>
+            <span class="val">${card.cardholderName}</span>
+          </div>
+          <div class="meta-item">
+            <span class="key">Expires</span>
+            <span class="val">${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</span>
+          </div>
+          <div class="meta-item">
+            <span class="key">Network</span>
+            <span class="val">${card.network}</span>
+          </div>
+          <div class="meta-item">
+            <span class="key">Credit Limit</span>
+            <span class="val">$5,000.00</span>
+          </div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap">
+          <span class="chip">${statusClass}</span>
+          <span class="chip">${lockBadge}</span>
+        </div>
+      </div>
+      <div style="margin-top:.75rem;font-size:.8rem;color:var(--text-lt)">
+        Account ID: <code style="background:#f1f5f9;padding:.15rem .4rem;border-radius:4px">${account.id}</code>
+      </div>
+    `;
+  }
+
+  /* ════════════════════════════════════════
+     Manage Cards
+  ═════════════════════════════════════════ */
+  function autoLoadCards() {
+    const stored = localStorage.getItem('cam_accountId');
+    if (stored) {
+      document.getElementById('accountIdInput').value = stored;
+      loadCards();
+    }
+  }
+
+  async function loadCards() {
+    const accountId = document.getElementById('accountIdInput').value.trim();
+    if (!accountId) { showAlert('manageAlert', 'Please enter an Account ID.', 'error'); return; }
+
+    const btn = document.getElementById('loadBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin">⟳</span>';
+    clearAlert('manageAlert');
+
+    try {
+      const result = await apiFetch(`/accounts/${accountId}/cards`);
+      const cards = result.data ?? [];
+      localStorage.setItem('cam_accountId', accountId);
+      renderCardTiles(cards, accountId);
+    } catch (err) {
+      showAlert('manageAlert', err.message, 'error');
+      document.getElementById('cardsContainer').innerHTML = '';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Load Cards';
+    }
+  }
+
+  function renderCardTiles(cards, accountId) {
+    const container = document.getElementById('cardsContainer');
+    if (!cards.length) {
+      container.innerHTML = `
+        <div class="panel">
+          <div class="empty">
+            <div class="icon">💳</div>
+            <p>No cards found for this account.</p>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const html = cards.map(card => {
+      const statusBadge = {
+        ACTIVE:              '<span class="badge badge-active">Active</span>',
+        PENDING_ACTIVATION:  '<span class="badge badge-pending">Pending Activation</span>',
+        INACTIVE:            '<span class="badge badge-inactive">Inactive</span>',
+        SUSPENDED:           '<span class="badge badge-suspended">Suspended</span>',
+        CLOSED:              '<span class="badge badge-closed">Closed</span>',
+      }[card.status] ?? `<span class="badge">${card.status}</span>`;
+
+      const lockBadge = card.isLocked
+        ? '<span class="badge badge-locked">🔒 Locked</span>'
+        : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
+
+      const isClosed = card.status === 'CLOSED';
+      const lockDisabled  = isClosed || card.isLocked  ? 'disabled' : '';
+      const unlockDisabled= isClosed || !card.isLocked ? 'disabled' : '';
+
+      return `
+        <div class="card-tile ${card.isLocked ? 'locked' : ''}" id="tile-${card.id}">
+          <div class="tile-header">
+            <span class="network">${card.network}</span>
+            <span class="type-badge ${card.type.toLowerCase()}">${card.type}</span>
+          </div>
+          <div class="masked-pan">${card.maskedPan}</div>
+          <div class="expiry">Expires ${String(card.expiryMonth).padStart(2,'0')} / ${card.expiryYear}</div>
+          <div class="status-row">${statusBadge}${lockBadge}</div>
+          <div class="tile-actions">
+            <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}', 'lock',   '${accountId}')">🔒 Lock</button>
+            <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}', 'unlock', '${accountId}')">🔓 Unlock</button>
+          </div>
+          <div id="tile-alert-${card.id}" class="alert" style="margin-top:.6rem;padding:.5rem .75rem;font-size:.8rem"></div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = `<div class="cards-grid">${html}</div>`;
+  }
+
+  async function cardAction(cardId, action, accountId) {
+    const tile = document.getElementById(`tile-${cardId}`);
+    const btns = tile.querySelectorAll('button');
+    const alertEl = document.getElementById(`tile-alert-${cardId}`);
+
+    btns.forEach(b => b.disabled = true);
+    alertEl.className = 'alert';
+    alertEl.textContent = '';
+
+    try {
+      await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST' });
+      // Refresh the full card list
+      await loadCards();
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.className = 'alert alert-error visible';
+      btns.forEach(b => b.disabled = false);
+    }
+  }
+
+  /* ════════════════════════════════════════
+     Alert helpers
+  ═════════════════════════════════════════ */
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = `alert alert-${type} visible`;
+  }
+  function clearAlert(id) {
+    const el = document.getElementById(id);
+    el.className = 'alert';
+    el.textContent = '';
+  }
+</script>
+
+</body>
+</html>

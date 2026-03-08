@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum CardType {
+  VIRTUAL
+  PHYSICAL
+}
+
+enum CardStatus {
+  PENDING_ACTIVATION
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum KycStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  REQUIRES_REVIEW
+}
+
+enum LimitType {
+  DAILY
+  MONTHLY
+  PER_TRANSACTION
+  MCC_BLOCK
+  MCC_ALLOW
+}
+
+model Account {
+  id                   String        @id @default(uuid())
+  externalRef          String        @unique @map("external_ref")
+  status               AccountStatus @default(INACTIVE)
+  firstName            String        @map("first_name")
+  lastName             String        @map("last_name")
+  email                String        @unique
+  phone                String?
+  dateOfBirth          DateTime?     @map("date_of_birth") @db.Date
+  taxId                String?       @map("tax_id")
+  kycStatus            KycStatus     @default(PENDING) @map("kyc_status")
+  kycVerifiedAt        DateTime?     @map("kyc_verified_at")
+  addressLine1         String?       @map("address_line1")
+  addressLine2         String?       @map("address_line2")
+  city                 String?
+  state                String?
+  postalCode           String?       @map("postal_code")
+  country              String?
+  creditLimitCents     Int           @default(0) @map("credit_limit_cents")
+  availableBalanceCents Int          @default(0) @map("available_balance_cents")
+  statementBalanceCents Int          @default(0) @map("statement_balance_cents")
+  currency             String        @default("USD")
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+
+  cards          Card[]
+  spendingLimits AccountSpendingLimit[]
+
+  @@map("accounts")
+}
+
+model Card {
+  id              String     @id @default(uuid())
+  accountId       String     @map("account_id")
+  type            CardType
+  status          CardStatus @default(PENDING_ACTIVATION)
+  isLocked        Boolean    @default(false) @map("is_locked")
+  last4           String
+  maskedPan       String     @map("masked_pan")
+  network         String     @default("VISA")
+  expiryMonth     Int        @map("expiry_month")
+  expiryYear      Int        @map("expiry_year")
+  cardholderName  String     @map("cardholder_name")
+  shippingAddress Json?      @map("shipping_address")
+  dailyLimitCents        Int? @map("daily_limit_cents")
+  monthlyLimitCents      Int? @map("monthly_limit_cents")
+  transactionLimitCents  Int? @map("transaction_limit_cents")
+  activatedAt     DateTime?  @map("activated_at")
+  deactivatedAt   DateTime?  @map("deactivated_at")
+  expiresAt       DateTime?  @map("expires_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  account        Account @relation(fields: [accountId], references: [id])
+  spendingLimits CardSpendingLimit[]
+
+  @@index([accountId], name: "idx_cards_account_id")
+  @@index([status], name: "idx_cards_status")
+  @@map("cards")
+}
+
+model AccountSpendingLimit {
+  id        String    @id @default(uuid())
+  accountId String    @map("account_id")
+  limitType LimitType @map("limit_type")
+  valueCents Int?     @map("value_cents")
+  mccCode   String?   @map("mcc_code")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, limitType, mccCode], name: "uq_account_limit_type_mcc")
+  @@map("account_spending_limits")
+}
+
+model CardSpendingLimit {
+  id        String    @id @default(uuid())
+  cardId    String    @map("card_id")
+  limitType LimitType @map("limit_type")
+  valueCents Int?     @map("value_cents")
+  mccCode   String?   @map("mcc_code")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  card Card @relation(fields: [cardId], references: [id])
+
+  @@unique([cardId, limitType, mccCode], name: "uq_card_limit_type_mcc")
+  @@map("card_spending_limits")
+}
