@@ -1280,7 +1280,7 @@
     alertEl.textContent = '';
 
     try {
-      await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST' });
+      await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST', body: '{}' });
       await loadCards();
     } catch (err) {
       alertEl.textContent = err.message;
