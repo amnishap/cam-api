@@ -680,7 +680,7 @@
   /* ════════════════════════════════════════
      Helpers — cents ↔ dollars
   ═════════════════════════════════════════ */
-  const toDollars = cents => cents == null ? '' : (cents / 100).toFixed(2);
+  const toDollars = cents => cents == null ? '' : String(Math.round(cents / 100));
   const toCents   = dollars => {
     const n = parseFloat(dollars);
     return isNaN(n) || dollars === '' ? null : Math.round(n * 100);
@@ -1031,19 +1031,19 @@
         <div class="acct-limits-grid">
           <div class="acct-limit-card monthly-card">
             <div class="alc-title">📅 Monthly Spend Cap</div>
-            <input id="acct-limit-monthly" type="number" min="0" step="0.01"
+            <input id="acct-limit-monthly" type="number" min="0" step="1"
               placeholder="No limit" value="${monthly}" />
             <div class="alc-hint">Total spend allowed per calendar month</div>
           </div>
           <div class="acct-limit-card">
             <div class="alc-title">📆 Daily Limit</div>
-            <input id="acct-limit-daily" type="number" min="0" step="0.01"
+            <input id="acct-limit-daily" type="number" min="0" step="1"
               placeholder="No limit" value="${daily}" />
             <div class="alc-hint">Max spend per day</div>
           </div>
           <div class="acct-limit-card">
             <div class="alc-title">💳 Per-Transaction</div>
-            <input id="acct-limit-txn" type="number" min="0" step="0.01"
+            <input id="acct-limit-txn" type="number" min="0" step="1"
               placeholder="No limit" value="${txn}" />
             <div class="alc-hint">Max single transaction amount</div>
           </div>
@@ -1139,7 +1139,7 @@
         <div class="highlight-title">📅 Monthly Spend Cap (virtual card)</div>
         <div class="limit-row">
           <label>Monthly limit</label>
-          <input id="climit-monthly-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+          <input id="climit-monthly-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
           <span class="limit-unit">USD</span>
         </div>
       </div>` : '';
@@ -1147,7 +1147,7 @@
     const monthlyRowIfPhysical = !isVirtual ? `
       <div class="limit-row">
         <label>Monthly</label>
-        <input id="climit-monthly-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+        <input id="climit-monthly-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
         <span class="limit-unit">USD</span>
       </div>` : '';
 
@@ -1174,12 +1174,12 @@
           ${monthlyRowIfPhysical}
           <div class="limit-row">
             <label>Daily</label>
-            <input id="climit-daily-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+            <input id="climit-daily-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
             <span class="limit-unit">USD</span>
           </div>
           <div class="limit-row">
             <label>Per transaction</label>
-            <input id="climit-txn-${card.id}" type="number" min="0" step="0.01" placeholder="No limit" />
+            <input id="climit-txn-${card.id}" type="number" min="0" step="1" placeholder="No limit" />
             <span class="limit-unit">USD</span>
           </div>
           <div id="mcc-section-${card.id}"><!-- MCC section injected on open --></div>
