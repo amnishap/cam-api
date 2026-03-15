@@ -849,6 +849,212 @@
     /* Empty state */
     .empty { text-align: center; padding: 2.5rem 1rem; color: var(--apple-gray); }
     .empty .icon { font-size: 2.5rem; margin-bottom: .75rem; }
+
+    /* ════════════════════════════════
+       SERVICE DESK PAGE
+    ════════════════════════════════ */
+    .svc-banner {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+      color: #ff9f0a;
+      padding: .65rem 1.5rem;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin: 0 -1.5rem;
+      border-bottom: 2px solid #ff9f0a;
+    }
+    .svc-banner .svc-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff9f0a;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .3; }
+    }
+
+    /* PIN gate */
+    .svc-pin-gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 72vh;
+      padding: 2rem;
+    }
+    .pin-card {
+      background: var(--apple-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(0,0,0,.08);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+    .pin-lock-icon { font-size: 2.8rem; margin-bottom: 1rem; }
+    .pin-card h2 {
+      font-size: 1.3rem; font-weight: 700; letter-spacing: -.03em;
+      margin-bottom: .3rem; color: var(--apple-black);
+    }
+    .pin-card p {
+      font-size: .82rem; color: var(--apple-gray); margin-bottom: 1.75rem;
+    }
+    .pin-display {
+      display: flex;
+      justify-content: center;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .pin-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid #c7c7cc;
+      background: transparent;
+      transition: background .15s, border-color .15s;
+    }
+    .pin-dot.filled { background: var(--apple-black); border-color: var(--apple-black); }
+    .pin-dot.error  { background: var(--red); border-color: var(--red); }
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .6rem;
+    }
+    .pin-key {
+      background: var(--apple-lt);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+      font-size: 1.15rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--apple-black);
+      cursor: pointer;
+      transition: background .12s, transform .08s;
+    }
+    .pin-key:hover  { background: #e5e5ea; }
+    .pin-key:active { transform: scale(.93); background: #d1d1d6; }
+    .pin-key.del    { font-size: .9rem; color: var(--apple-gray); }
+    .pin-error-msg  {
+      font-size: .78rem; color: var(--red);
+      margin-top: .75rem; min-height: 1.1rem;
+    }
+
+    /* Service portal */
+    .svc-portal-wrap { padding: 0 0 4rem; }
+
+    /* Search mode toggle */
+    .search-mode-toggle {
+      display: flex;
+      gap: .4rem;
+      margin-bottom: 1rem;
+    }
+    .mode-pill {
+      padding: .35rem .9rem;
+      border-radius: 980px;
+      border: 1.5px solid #e5e5ea;
+      background: transparent;
+      font-size: .8rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--apple-gray);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .mode-pill.active {
+      background: var(--apple-black);
+      border-color: var(--apple-black);
+      color: #fff;
+    }
+
+    /* Service card tile */
+    .svc-card-tile {
+      background: var(--apple-white);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .svc-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 1.25rem;
+      background: #f9f9fb;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .svc-card-header .svc-pan {
+      font-family: ui-monospace, monospace;
+      font-size: .95rem;
+      letter-spacing: .1em;
+      color: var(--apple-black);
+      font-weight: 500;
+    }
+    .svc-card-header .svc-meta {
+      font-size: .75rem;
+      color: var(--apple-gray);
+      margin-top: .1rem;
+    }
+    .svc-card-header .svc-badges { display: flex; gap: .4rem; flex-wrap: wrap; margin-left: auto; }
+
+    /* Service sections */
+    .svc-section {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .svc-section:last-child { border-bottom: none; }
+    .svc-section-title {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--apple-gray); margin-bottom: .75rem;
+    }
+
+    /* Lock/unlock section in service */
+    .svc-lock-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .svc-lock-status {
+      font-size: .85rem;
+      color: var(--apple-gray);
+      flex: 1;
+    }
+    .svc-lock-status strong { color: var(--apple-black); }
+
+    /* Replace section in service */
+    .svc-replace-section { }
+    .svc-replace-reasons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      margin-bottom: .85rem;
+    }
+    .svc-replace-confirm-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Closed card overlay */
+    .svc-card-tile.svc-closed {
+      opacity: .7;
+    }
+    .svc-closed-banner {
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: .35rem 1.25rem;
+      border-top: 1px solid #fca5a5;
+    }
   </style>
 </head>
 <body>
@@ -859,6 +1065,7 @@
   <nav>
     <button class="active" onclick="showPage('apply', this)">Apply</button>
     <button onclick="showPage('manage', this)">Manage Cards</button>
+    <button onclick="showPage('service', this)" style="color:#ff9f0a">🔐 Service Desk</button>
   </nav>
 </header>
 
@@ -1074,6 +1281,73 @@
     </div>
   </div>
 
+  <!-- ══════════════ SERVICE DESK PAGE ══════════════ -->
+  <div id="page-service" class="page">
+
+    <!-- PIN Gate -->
+    <div id="svc-pin-gate" class="svc-pin-gate">
+      <div class="pin-card">
+        <div class="pin-lock-icon">🔐</div>
+        <h2>Service Desk</h2>
+        <p>Agent access only — enter your service PIN to continue.</p>
+        <div class="pin-display">
+          <div class="pin-dot" id="pd0"></div>
+          <div class="pin-dot" id="pd1"></div>
+          <div class="pin-dot" id="pd2"></div>
+          <div class="pin-dot" id="pd3"></div>
+        </div>
+        <div class="pin-keypad">
+          <button class="pin-key" onclick="svcPinPress('1')">1</button>
+          <button class="pin-key" onclick="svcPinPress('2')">2</button>
+          <button class="pin-key" onclick="svcPinPress('3')">3</button>
+          <button class="pin-key" onclick="svcPinPress('4')">4</button>
+          <button class="pin-key" onclick="svcPinPress('5')">5</button>
+          <button class="pin-key" onclick="svcPinPress('6')">6</button>
+          <button class="pin-key" onclick="svcPinPress('7')">7</button>
+          <button class="pin-key" onclick="svcPinPress('8')">8</button>
+          <button class="pin-key" onclick="svcPinPress('9')">9</button>
+          <button class="pin-key" style="opacity:0" disabled></button>
+          <button class="pin-key" onclick="svcPinPress('0')">0</button>
+          <button class="pin-key del" onclick="svcPinBackspace()">⌫</button>
+        </div>
+        <div class="pin-error-msg" id="svc-pin-error"></div>
+      </div>
+    </div>
+
+    <!-- Service Portal (shown after PIN auth) -->
+    <div id="svc-portal" style="display:none">
+      <div class="svc-banner">
+        <div class="svc-dot"></div>
+        Service Desk — Agent Access Only
+        <button onclick="svcSignOut()" class="btn btn-sm" style="margin-left:auto;background:rgba(255,159,10,.15);color:#ff9f0a;border:1px solid rgba(255,159,10,.3);padding:.25rem .75rem;font-size:.72rem">Sign Out</button>
+      </div>
+
+      <div class="svc-portal-wrap">
+
+        <!-- Card Lookup -->
+        <div class="panel" style="margin-top:1.5rem">
+          <h2>Card Lookup</h2>
+          <div class="search-mode-toggle">
+            <button class="mode-pill active" id="svc-mode-acct" onclick="svcSetMode('account')">By Account ID</button>
+            <button class="mode-pill"        id="svc-mode-card" onclick="svcSetMode('card')">By Card ID</button>
+          </div>
+          <div class="lookup-row">
+            <div class="form-group">
+              <label id="svc-lookup-label" for="svcLookupInput">Account ID</label>
+              <input id="svcLookupInput" type="text" placeholder="Paste UUID…"
+                onkeydown="if(event.key==='Enter') svcLookup()" />
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="svcLookup()" id="svcLookupBtn">Search</button>
+          </div>
+          <div id="svcAlert" class="alert" style="margin-top:.75rem"></div>
+        </div>
+
+        <div id="svcCardsContainer"></div>
+
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -1176,6 +1450,7 @@
     document.getElementById(`page-${name}`).classList.add('active');
     btn.classList.add('active');
     if (name === 'manage') autoLoadCards();
+    if (name === 'service') svcInit();
   }
 
   /* ════════════════════════════════════════
@@ -1509,34 +1784,6 @@
           <button class="btn btn-sm btn-lock"   ${lockDisabled}   onclick="cardAction('${card.id}','lock','${accountId}')">🔒 Lock</button>
           <button class="btn btn-sm btn-unlock" ${unlockDisabled} onclick="cardAction('${card.id}','unlock','${accountId}')">🔓 Unlock</button>
           ${!isClosed ? `<button class="btn btn-sm btn-limits" onclick="toggleCardLimits('${card.id}')">⚙ Limits</button>` : ''}
-          ${!isClosed ? `<button class="btn btn-sm btn-danger" onclick="toggleReplacePanel('${card.id}')">↺ Replace</button>` : ''}
-        </div>
-
-        <!-- Replace panel -->
-        <div class="replace-panel" id="replace-panel-${card.id}">
-          <h4>🔄 Replace This Card</h4>
-          <div class="replace-reasons">
-            ${[
-              { value: 'LOST',    icon: '🔍', label: 'Lost',    sub: 'Card misplaced' },
-              { value: 'STOLEN',  icon: '🚨', label: 'Stolen',  sub: 'Card taken' },
-              { value: 'FRAUD',   icon: '⚠️',  label: 'Fraud',   sub: 'Suspicious activity' },
-              { value: 'DAMAGED', icon: '💔', label: 'Damaged', sub: 'Card not readable' },
-            ].map(r => `
-              <button type="button" class="replace-reason" data-reason="${r.value}"
-                onclick="selectReplaceReason('${card.id}', '${r.value}', this)">
-                <span class="rr-icon">${r.icon}</span>
-                <span class="rr-label">${r.label}</span>
-                <span class="rr-sub">${r.sub}</span>
-              </button>`).join('')}
-          </div>
-          <div style="display:flex;align-items:center;gap:.75rem">
-            <button class="btn btn-sm btn-danger" id="confirm-replace-${card.id}" disabled
-              onclick="confirmReplace('${card.id}', '${accountId}')">
-              Confirm Replacement
-            </button>
-            <button class="btn btn-sm btn-ghost" onclick="toggleReplacePanel('${card.id}')">Cancel</button>
-            <span id="replace-alert-${card.id}" class="drawer-alert"></span>
-          </div>
         </div>
 
         <div class="limits-drawer" id="limits-drawer-${card.id}">
@@ -1626,44 +1873,220 @@
   }
 
   /* ════════════════════════════════════════
-     Card replacement
+     SERVICE DESK
   ═════════════════════════════════════════ */
-  const selectedReplaceReasons = {};
+  const SERVICE_PIN   = '7890';
+  let   svcPinBuffer  = '';
+  let   svcSearchMode = 'account'; // 'account' | 'card'
+  const svcSelectedReasons = {};
 
-  function toggleReplacePanel(cardId) {
-    const panel = document.getElementById(`replace-panel-${cardId}`);
-    panel.classList.toggle('open');
-    // Reset selection when closing
-    if (!panel.classList.contains('open')) {
-      delete selectedReplaceReasons[cardId];
-      panel.querySelectorAll('.replace-reason').forEach(b => b.classList.remove('selected'));
-      document.getElementById(`confirm-replace-${cardId}`).disabled = true;
+  /* ─── Init / auth ─── */
+  function svcInit() {
+    if (sessionStorage.getItem('svc_auth') === '1') {
+      document.getElementById('svc-pin-gate').style.display = 'none';
+      document.getElementById('svc-portal').style.display   = 'block';
+    } else {
+      document.getElementById('svc-pin-gate').style.display = 'flex';
+      document.getElementById('svc-portal').style.display   = 'none';
+      svcPinBuffer = '';
+      svcRenderDots();
     }
   }
 
-  function selectReplaceReason(cardId, reason, btn) {
-    selectedReplaceReasons[cardId] = reason;
-    btn.closest('.replace-reasons').querySelectorAll('.replace-reason').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById(`confirm-replace-${cardId}`).disabled = false;
+  function svcSignOut() {
+    sessionStorage.removeItem('svc_auth');
+    document.getElementById('svcCardsContainer').innerHTML = '';
+    svcPinBuffer = '';
+    svcRenderDots();
+    document.getElementById('svc-pin-error').textContent = '';
+    document.getElementById('svc-pin-gate').style.display = 'flex';
+    document.getElementById('svc-portal').style.display   = 'none';
   }
 
-  async function confirmReplace(cardId, accountId) {
-    const reason  = selectedReplaceReasons[cardId];
-    const alertEl = document.getElementById(`replace-alert-${cardId}`);
-    const confirmBtn = document.getElementById(`confirm-replace-${cardId}`);
-    if (!reason) return;
+  /* ─── PIN keypad ─── */
+  function svcPinPress(digit) {
+    if (svcPinBuffer.length >= 4) return;
+    svcPinBuffer += digit;
+    svcRenderDots();
+    if (svcPinBuffer.length === 4) svcCheckPin();
+  }
 
+  function svcPinBackspace() {
+    svcPinBuffer = svcPinBuffer.slice(0, -1);
+    svcRenderDots();
+    document.getElementById('svc-pin-error').textContent = '';
+    document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+  }
+
+  function svcRenderDots() {
+    for (let i = 0; i < 4; i++) {
+      document.getElementById(`pd${i}`).classList.toggle('filled', i < svcPinBuffer.length);
+    }
+  }
+
+  function svcCheckPin() {
+    if (svcPinBuffer === SERVICE_PIN) {
+      sessionStorage.setItem('svc_auth', '1');
+      document.getElementById('svc-pin-gate').style.display = 'none';
+      document.getElementById('svc-portal').style.display   = 'block';
+    } else {
+      document.querySelectorAll('.pin-dot').forEach(d => d.classList.add('error'));
+      document.getElementById('svc-pin-error').textContent = 'Incorrect PIN. Try again.';
+      setTimeout(() => {
+        svcPinBuffer = '';
+        svcRenderDots();
+        document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+        document.getElementById('svc-pin-error').textContent = '';
+      }, 900);
+    }
+  }
+
+  /* ─── Search mode ─── */
+  function svcSetMode(mode) {
+    svcSearchMode = mode;
+    document.getElementById('svc-mode-acct').classList.toggle('active', mode === 'account');
+    document.getElementById('svc-mode-card').classList.toggle('active', mode === 'card');
+    document.getElementById('svc-lookup-label').textContent = mode === 'account' ? 'Account ID' : 'Card ID';
+    document.getElementById('svcLookupInput').placeholder = 'Paste UUID…';
+    document.getElementById('svcCardsContainer').innerHTML = '';
+    clearAlert('svcAlert');
+  }
+
+  /* ─── Lookup ─── */
+  async function svcLookup() {
+    const id  = document.getElementById('svcLookupInput').value.trim();
+    if (!id) { showAlert('svcAlert', `Please enter a${svcSearchMode === 'account' ? 'n Account' : ' Card'} ID.`, 'error'); return; }
+    const btn = document.getElementById('svcLookupBtn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin">⟳</span>';
+    clearAlert('svcAlert');
+    try {
+      let cards;
+      if (svcSearchMode === 'account') {
+        const res = await apiFetch(`/accounts/${id}/cards`);
+        cards = res.data ?? [];
+      } else {
+        const card = await apiFetch(`/cards/${id}`);
+        cards = [card];
+      }
+      if (!cards.length) {
+        document.getElementById('svcCardsContainer').innerHTML =
+          `<div class="panel"><div class="empty"><div class="icon">💳</div><p>No cards found.</p></div></div>`;
+      } else {
+        renderServiceCards(cards);
+      }
+    } catch (err) {
+      showAlert('svcAlert', err.message, 'error');
+      document.getElementById('svcCardsContainer').innerHTML = '';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Search';
+    }
+  }
+
+  /* ─── Render service card tiles ─── */
+  function renderServiceCards(cards) {
+    document.getElementById('svcCardsContainer').innerHTML =
+      cards.map(c => buildServiceCardTileHTML(c)).join('');
+  }
+
+  function buildServiceCardTileHTML(card) {
+    const isClosed   = card.status === 'CLOSED';
+    const statusBadge = {
+      ACTIVE:             '<span class="badge badge-active">Active</span>',
+      PENDING_ACTIVATION: '<span class="badge badge-pending">Pending Activation</span>',
+      INACTIVE:           '<span class="badge badge-inactive">Inactive</span>',
+      SUSPENDED:          '<span class="badge badge-suspended">Suspended</span>',
+      CLOSED:             '<span class="badge badge-closed">Closed</span>',
+    }[card.status] ?? `<span class="badge">${card.status}</span>`;
+    const lockBadge = card.isLocked
+      ? '<span class="badge badge-locked">🔒 Locked</span>'
+      : '<span class="badge badge-unlocked">🔓 Unlocked</span>';
+
+    const lockSection = isClosed ? `<div class="svc-section">
+        <div class="svc-section-title">🔒 Lock Control</div>
+        <div class="svc-lock-row">
+          <div class="svc-lock-status">Card is <strong>closed</strong> — no lock changes allowed.</div>
+        </div>
+      </div>` : `<div class="svc-section">
+        <div class="svc-section-title">🔒 Lock Control</div>
+        <div class="svc-lock-row">
+          <div class="svc-lock-status">Card is currently <strong>${card.isLocked ? 'locked' : 'unlocked'}</strong>.</div>
+          <button class="btn btn-sm btn-lock"   ${card.isLocked ? 'disabled' : ''}  onclick="svcCardAction('${card.id}','lock')">🔒 Lock</button>
+          <button class="btn btn-sm btn-unlock" ${!card.isLocked ? 'disabled' : ''} onclick="svcCardAction('${card.id}','unlock')">🔓 Unlock</button>
+        </div>
+        <div id="svc-lock-alert-${card.id}" class="drawer-alert" style="margin-top:.5rem"></div>
+      </div>`;
+
+    const replaceSection = isClosed ? '' : `<div class="svc-section svc-replace-section">
+        <div class="svc-section-title">↺ Card Replacement</div>
+        <div class="svc-replace-reasons" id="svc-reasons-${card.id}">
+          ${[
+            { value: 'LOST',    icon: '🔍', label: 'Lost',    sub: 'Card misplaced' },
+            { value: 'STOLEN',  icon: '🚨', label: 'Stolen',  sub: 'Card taken' },
+            { value: 'FRAUD',   icon: '⚠️',  label: 'Fraud',   sub: 'Suspicious activity' },
+            { value: 'DAMAGED', icon: '💔', label: 'Damaged', sub: 'Card not readable' },
+          ].map(r => `
+            <button type="button" class="replace-reason" data-reason="${r.value}"
+              onclick="svcSelectReason('${card.id}','${r.value}',this)">
+              <span class="rr-icon">${r.icon}</span>
+              <span class="rr-label">${r.label}</span>
+              <span class="rr-sub">${r.sub}</span>
+            </button>`).join('')}
+        </div>
+        <div class="svc-replace-confirm-row">
+          <button class="btn btn-sm btn-danger" id="svc-confirm-${card.id}" disabled
+            onclick="svcConfirmReplace('${card.id}')">Confirm Replacement</button>
+          <span id="svc-replace-alert-${card.id}" class="drawer-alert"></span>
+        </div>
+      </div>`;
+
+    return `
+      <div class="svc-card-tile ${isClosed ? 'svc-closed' : ''}" id="svc-tile-${card.id}">
+        <div class="svc-card-header">
+          <div>
+            <div class="svc-pan">${card.maskedPan}</div>
+            <div class="svc-meta">${card.type} · ${card.network} · Expires ${String(card.expiryMonth).padStart(2,'0')}/${card.expiryYear} · ${card.cardholderName}</div>
+          </div>
+          <div class="svc-badges">${statusBadge}${lockBadge}</div>
+        </div>
+        ${lockSection}
+        ${replaceSection}
+        ${isClosed ? '<div class="svc-closed-banner">Terminal state — card closed, no actions available</div>' : ''}
+      </div>`;
+  }
+
+  /* ─── Service actions ─── */
+  async function svcCardAction(cardId, action) {
+    const alertEl = document.getElementById(`svc-lock-alert-${cardId}`);
+    alertEl.className = 'drawer-alert';
+    try {
+      await apiFetch(`/cards/${cardId}/${action}`, { method: 'POST', body: '{}' });
+      await svcLookup();
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.className = 'drawer-alert visible error';
+    }
+  }
+
+  function svcSelectReason(cardId, reason, btn) {
+    svcSelectedReasons[cardId] = reason;
+    document.getElementById(`svc-reasons-${cardId}`)
+      .querySelectorAll('.replace-reason').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById(`svc-confirm-${cardId}`).disabled = false;
+  }
+
+  async function svcConfirmReplace(cardId) {
+    const reason     = svcSelectedReasons[cardId];
+    const alertEl    = document.getElementById(`svc-replace-alert-${cardId}`);
+    const confirmBtn = document.getElementById(`svc-confirm-${cardId}`);
+    if (!reason) return;
     confirmBtn.disabled = true;
     confirmBtn.innerHTML = '<span class="spin">⟳</span> Replacing…';
     alertEl.className = 'drawer-alert';
-
     try {
-      await apiFetch(`/cards/${cardId}/replace`, {
-        method: 'POST',
-        body: JSON.stringify({ reason }),
-      });
-      await loadCards();
+      await apiFetch(`/cards/${cardId}/replace`, { method: 'POST', body: JSON.stringify({ reason }) });
+      delete svcSelectedReasons[cardId];
+      await svcLookup();
     } catch (err) {
       alertEl.textContent = err.message;
       alertEl.className = 'drawer-alert visible error';
