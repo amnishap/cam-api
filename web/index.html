@@ -851,6 +851,123 @@
     .empty .icon { font-size: 2.5rem; margin-bottom: .75rem; }
 
     /* ════════════════════════════════
+       TRANSACTIONS PAGE
+    ════════════════════════════════ */
+    .txn-page-wrap { padding: 2rem 0 4rem; }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+    .filter-bar .form-group { flex: 1; min-width: 130px; }
+    .filter-bar select {
+      background: var(--apple-lt);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: .62rem .85rem;
+      font-size: .88rem;
+      font-family: inherit;
+      color: var(--apple-black);
+      width: 100%;
+      transition: border-color .2s;
+    }
+    .filter-bar select:focus { outline: none; border-color: var(--apple-blue); background: #fff; }
+
+    /* Transaction list */
+    .txn-list { display: flex; flex-direction: column; gap: .5rem; }
+
+    .txn-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .9rem 1.1rem;
+      background: var(--apple-white);
+      border: 1px solid rgba(0,0,0,.07);
+      border-radius: var(--radius-sm);
+      transition: box-shadow .15s, transform .15s;
+      cursor: default;
+    }
+    .txn-row:hover { box-shadow: var(--shadow-sm); transform: translateX(2px); }
+
+    .txn-icon {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .txn-icon.PURCHASE   { background: #fff0f0; }
+    .txn-icon.REFUND     { background: #f0fdf4; }
+    .txn-icon.PAYMENT    { background: #eff6ff; }
+    .txn-icon.FEE        { background: #fef9c3; }
+    .txn-icon.ADJUSTMENT { background: #f5f3ff; }
+
+    .txn-main { flex: 1; min-width: 0; }
+    .txn-merchant {
+      font-size: .9rem; font-weight: 600; color: var(--apple-black);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      letter-spacing: -.01em;
+    }
+    .txn-meta {
+      font-size: .73rem; color: var(--apple-gray);
+      display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .15rem;
+    }
+
+    .txn-amount {
+      font-size: .95rem; font-weight: 700;
+      letter-spacing: -.02em; text-align: right; white-space: nowrap;
+    }
+    .txn-amount.debit  { color: var(--red); }
+    .txn-amount.credit { color: var(--green); }
+
+    .txn-status-col { text-align: right; }
+
+    .badge-settled  { background: #dcfce7; color: #166534; }
+    .badge-pending  { background: #fef9c3; color: #854d0e; }
+    .badge-declined { background: #fee2e2; color: #991b1b; }
+    .badge-reversed { background: #f1f5f9; color: #475569; }
+
+    /* Simulate drawer */
+    .simulate-drawer {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f2f2f7;
+    }
+    .simulate-drawer.open { display: block; }
+    .simulate-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 600px) { .simulate-grid { grid-template-columns: 1fr; } }
+    .simulate-drawer .form-group label {
+      font-size: .75rem; font-weight: 500; color: var(--apple-gray);
+      margin-bottom: .25rem; display: block;
+    }
+    .simulate-drawer .form-group input,
+    .simulate-drawer .form-group select {
+      background: var(--apple-lt);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: .6rem .85rem;
+      font-size: .88rem; font-family: inherit; color: var(--apple-black);
+      width: 100%; transition: border-color .2s;
+    }
+    .simulate-drawer .form-group input:focus,
+    .simulate-drawer .form-group select:focus {
+      outline: none; border-color: var(--apple-blue); background: #fff;
+    }
+
+    /* Load more */
+    .load-more-wrap { text-align: center; margin-top: 1rem; }
+
+    /* ════════════════════════════════
        SERVICE DESK PAGE
     ════════════════════════════════ */
     .svc-banner {
@@ -1065,6 +1182,7 @@
   <nav>
     <button class="active" onclick="showPage('apply', this)">Apply</button>
     <button onclick="showPage('manage', this)">Manage Cards</button>
+    <button onclick="showPage('transactions', this)">Transactions</button>
     <button onclick="showPage('service', this)" style="color:#ff9f0a">🔐 Service Desk</button>
   </nav>
 </header>
@@ -1281,6 +1399,123 @@
     </div>
   </div>
 
+  <!-- ══════════════ TRANSACTIONS PAGE ══════════════ -->
+  <div id="page-transactions" class="page">
+    <div class="txn-page-wrap">
+
+      <!-- Lookup + Filters -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Transaction History</h2>
+          <button class="btn btn-sm btn-limits" onclick="toggleSimulate()">+ Simulate Transaction</button>
+        </div>
+
+        <div class="lookup-row" style="margin-bottom:.75rem">
+          <div class="form-group">
+            <label for="txnAccountId">Account ID</label>
+            <input id="txnAccountId" type="text" placeholder="Paste your account UUID…"
+              onkeydown="if(event.key==='Enter') loadTransactions(true)" />
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadTransactions(true)" id="txnLoadBtn">Load</button>
+        </div>
+
+        <div class="filter-bar">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="txnFilterStatus" onchange="loadTransactions(true)">
+              <option value="">All statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="SETTLED">Settled</option>
+              <option value="DECLINED">Declined</option>
+              <option value="REVERSED">Reversed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="txnFilterType" onchange="loadTransactions(true)">
+              <option value="">All types</option>
+              <option value="PURCHASE">Purchase</option>
+              <option value="REFUND">Refund</option>
+              <option value="PAYMENT">Payment</option>
+              <option value="FEE">Fee</option>
+              <option value="ADJUSTMENT">Adjustment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Card</label>
+            <select id="txnFilterCard" onchange="loadTransactions(true)">
+              <option value="">All cards</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>From</label>
+            <input id="txnFilterFrom" type="date" onchange="loadTransactions(true)" />
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <input id="txnFilterTo" type="date" onchange="loadTransactions(true)" />
+          </div>
+        </div>
+
+        <!-- Simulate drawer -->
+        <div class="simulate-drawer" id="simulateDrawer">
+          <div class="simulate-grid">
+            <div class="form-group">
+              <label>Type *</label>
+              <select id="simType">
+                <option value="PURCHASE">Purchase</option>
+                <option value="REFUND">Refund</option>
+                <option value="PAYMENT">Payment</option>
+                <option value="FEE">Fee</option>
+                <option value="ADJUSTMENT">Adjustment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount (USD) *</label>
+              <input id="simAmount" type="number" min="1" step="1" placeholder="e.g. 50" />
+            </div>
+            <div class="form-group">
+              <label>Merchant Name</label>
+              <input id="simMerchant" type="text" placeholder="e.g. Starbucks" />
+            </div>
+            <div class="form-group">
+              <label>MCC Code</label>
+              <input id="simMcc" type="text" maxlength="4" placeholder="5812" />
+            </div>
+            <div class="form-group">
+              <label>Card (optional)</label>
+              <select id="simCard">
+                <option value="">No card / account-level</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;gap:.5rem">
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;cursor:pointer;padding-bottom:.65rem">
+                <input id="simSettle" type="checkbox" checked style="width:auto;border:none;padding:0" />
+                Settle immediately
+              </label>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" onclick="simulateTransaction()">Create Transaction</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleSimulate()">Cancel</button>
+            <span id="simAlert" class="drawer-alert"></span>
+          </div>
+        </div>
+
+        <div id="txnAlert" class="alert" style="margin-top:.75rem"></div>
+      </div>
+
+      <!-- Results -->
+      <div id="txnContainer"></div>
+
+      <!-- Load more -->
+      <div class="load-more-wrap" id="txnLoadMoreWrap" style="display:none">
+        <button class="btn btn-ghost" onclick="loadTransactions(false)" id="txnLoadMoreBtn">Load more</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ══════════════ SERVICE DESK PAGE ══════════════ -->
   <div id="page-service" class="page">
 
@@ -1449,8 +1684,9 @@
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById(`page-${name}`).classList.add('active');
     btn.classList.add('active');
-    if (name === 'manage') autoLoadCards();
-    if (name === 'service') svcInit();
+    if (name === 'manage')       autoLoadCards();
+    if (name === 'transactions') autoLoadTransactions();
+    if (name === 'service')      svcInit();
   }
 
   /* ════════════════════════════════════════
@@ -1869,6 +2105,154 @@
       alertEl.textContent = err.message;
       alertEl.className = 'alert alert-error visible';
       btns.forEach(b => b.disabled = false);
+    }
+  }
+
+  /* ════════════════════════════════════════
+     TRANSACTIONS
+  ═════════════════════════════════════════ */
+  const TXN_ICONS = { PURCHASE:'🛍', REFUND:'↩️', PAYMENT:'💰', FEE:'📋', ADJUSTMENT:'⚖️' };
+  const TXN_DEBIT = new Set(['PURCHASE', 'FEE']);
+
+  let txnCursor    = null;
+  let txnHasMore   = false;
+  let txnAccountId = null;
+
+  function autoLoadTransactions() {
+    const stored = localStorage.getItem('cam_accountId');
+    if (stored) { document.getElementById('txnAccountId').value = stored; loadTransactions(true); }
+  }
+
+  async function loadTransactions(reset = true) {
+    const accountId = document.getElementById('txnAccountId').value.trim();
+    if (!accountId) { showAlert('txnAlert', 'Please enter an Account ID.', 'error'); return; }
+    txnAccountId = accountId;
+    if (reset) { txnCursor = null; document.getElementById('txnContainer').innerHTML = ''; }
+
+    const btn = reset ? document.getElementById('txnLoadBtn') : document.getElementById('txnLoadMoreBtn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin">⟳</span>';
+    clearAlert('txnAlert');
+
+    const status  = document.getElementById('txnFilterStatus').value;
+    const type    = document.getElementById('txnFilterType').value;
+    const cardId  = document.getElementById('txnFilterCard').value;
+    const from    = document.getElementById('txnFilterFrom').value;
+    const to      = document.getElementById('txnFilterTo').value;
+
+    const params = new URLSearchParams({ limit: '20' });
+    if (status)   params.set('status', status);
+    if (type)     params.set('type', type);
+    if (cardId)   params.set('cardId', cardId);
+    if (from)     params.set('from', from);
+    if (to)       params.set('to', to + 'T23:59:59');
+    if (txnCursor) params.set('cursor', txnCursor);
+
+    try {
+      const [result, cardsResult] = await Promise.all([
+        apiFetch(`/accounts/${accountId}/transactions?${params}`),
+        reset ? apiFetch(`/accounts/${accountId}/cards`).catch(() => ({ data: [] })) : Promise.resolve(null),
+      ]);
+
+      if (reset && cardsResult) populateCardFilters(cardsResult.data ?? []);
+      localStorage.setItem('cam_accountId', accountId);
+
+      txnHasMore = result.pagination?.hasMore ?? false;
+      txnCursor  = result.pagination?.nextCursor ?? null;
+
+      const container = document.getElementById('txnContainer');
+      if (reset && !(result.data ?? []).length) {
+        container.innerHTML = `<div class="panel"><div class="empty"><div class="icon">🧾</div><p>No transactions found.</p></div></div>`;
+      } else {
+        let list = container.querySelector('.txn-list');
+        if (!list) {
+          container.innerHTML = '<div class="panel"><div class="txn-list" id="txnList"></div></div>';
+          list = container.querySelector('.txn-list');
+        }
+        (result.data ?? []).forEach(txn => {
+          list.insertAdjacentHTML('beforeend', buildTxnRowHTML(txn));
+        });
+      }
+
+      document.getElementById('txnLoadMoreWrap').style.display = txnHasMore ? 'block' : 'none';
+    } catch (err) {
+      showAlert('txnAlert', err.message, 'error');
+    } finally {
+      if (reset) { btn.disabled = false; btn.textContent = 'Load'; }
+      else        { btn.disabled = false; btn.textContent = 'Load more'; }
+    }
+  }
+
+  function populateCardFilters(cards) {
+    const cardSel  = document.getElementById('txnFilterCard');
+    const simCard  = document.getElementById('simCard');
+    const keep     = '<option value="">All cards</option>';
+    const simKeep  = '<option value="">No card / account-level</option>';
+    const opts = cards.filter(c => c.status !== 'CLOSED').map(c =>
+      `<option value="${c.id}">••••${c.last4} (${c.type})</option>`).join('');
+    cardSel.innerHTML = keep + opts;
+    simCard.innerHTML = simKeep + opts;
+  }
+
+  function buildTxnRowHTML(txn) {
+    const isDebit  = TXN_DEBIT.has(txn.type);
+    const amtClass = isDebit ? 'debit' : 'credit';
+    const sign     = isDebit ? '−' : '+';
+    const dollars  = (txn.amountCents / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const date     = new Date(txn.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const time     = new Date(txn.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const statusCls = { SETTLED: 'badge-settled', PENDING: 'badge-pending', DECLINED: 'badge-declined', REVERSED: 'badge-reversed' }[txn.status] ?? '';
+    const cardLabel = txn.card ? `••••${txn.card.last4}` : 'Account';
+
+    return `
+      <div class="txn-row">
+        <div class="txn-icon ${txn.type}">${TXN_ICONS[txn.type] ?? '💳'}</div>
+        <div class="txn-main">
+          <div class="txn-merchant">${txn.merchantName || txn.description || txn.type}</div>
+          <div class="txn-meta">
+            <span>${date} · ${time}</span>
+            ${txn.merchantCategory ? `<span>MCC ${txn.merchantCategory}</span>` : ''}
+            <span>${cardLabel}</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="txn-amount ${amtClass}">${sign}$${dollars}</div>
+          <div style="margin-top:.2rem"><span class="badge ${statusCls}">${txn.status}</span></div>
+        </div>
+      </div>`;
+  }
+
+  function toggleSimulate() {
+    const drawer = document.getElementById('simulateDrawer');
+    drawer.classList.toggle('open');
+  }
+
+  async function simulateTransaction() {
+    const accountId = document.getElementById('txnAccountId').value.trim();
+    if (!accountId) { showAlert('txnAlert', 'Load an account first.', 'error'); return; }
+    const alertEl = document.getElementById('simAlert');
+    alertEl.className = 'drawer-alert';
+
+    const amountDollars = parseFloat(document.getElementById('simAmount').value);
+    if (!amountDollars || amountDollars <= 0) {
+      alertEl.textContent = 'Enter a valid amount.'; alertEl.className = 'drawer-alert visible error'; return;
+    }
+
+    const body = {
+      type:             document.getElementById('simType').value,
+      amountCents:      Math.round(amountDollars * 100),
+      merchantName:     document.getElementById('simMerchant').value.trim() || undefined,
+      merchantCategory: document.getElementById('simMcc').value.trim() || undefined,
+      cardId:           document.getElementById('simCard').value || undefined,
+      settleImmediately: document.getElementById('simSettle').checked,
+    };
+
+    try {
+      await apiFetch(`/accounts/${accountId}/transactions`, { method: 'POST', body: JSON.stringify(body) });
+      alertEl.textContent = '✓ Transaction created'; alertEl.className = 'drawer-alert visible success';
+      setTimeout(() => { alertEl.className = 'drawer-alert'; }, 3000);
+      loadTransactions(true);
+    } catch (err) {
+      alertEl.textContent = err.message; alertEl.className = 'drawer-alert visible error';
     }
   }
 

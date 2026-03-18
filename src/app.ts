@@ -9,6 +9,7 @@ import healthRoutes from './modules/health/health.routes';
 import accountRoutes from './modules/accounts/account.routes';
 import cardRoutes from './modules/cards/card.routes';
 import limitRoutes from './modules/limits/limit.routes';
+import transactionRoutes from './modules/transactions/transaction.routes';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const fastify = Fastify({
@@ -50,6 +51,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(accountRoutes, { prefix: '/accounts' });
       await api.register(cardRoutes);
       await api.register(limitRoutes);
+      await api.register(transactionRoutes);
     },
     { prefix: '/api/v1' },
   );

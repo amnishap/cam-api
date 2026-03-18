@@ -42,6 +42,21 @@ enum LimitType {
   MCC_ALLOW
 }
 
+enum TxnType {
+  PURCHASE
+  REFUND
+  PAYMENT
+  FEE
+  ADJUSTMENT
+}
+
+enum TxnStatus {
+  PENDING
+  SETTLED
+  DECLINED
+  REVERSED
+}
+
 model Account {
   id                   String        @id @default(uuid())
   externalRef          String        @unique @map("external_ref")
@@ -69,6 +84,7 @@ model Account {
 
   cards          Card[]
   spendingLimits AccountSpendingLimit[]
+  transactions   Transaction[]
 
   @@map("accounts")
 }
@@ -97,6 +113,7 @@ model Card {
 
   account        Account @relation(fields: [accountId], references: [id])
   spendingLimits CardSpendingLimit[]
+  transactions   Transaction[]
 
   @@index([accountId], name: "idx_cards_account_id")
   @@index([status], name: "idx_cards_status")
@@ -131,4 +148,28 @@ model CardSpendingLimit {
 
   @@unique([cardId, limitType, mccCode], name: "uq_card_limit_type_mcc")
   @@map("card_spending_limits")
+}
+
+model Transaction {
+  id               String    @id @default(uuid())
+  accountId        String    @map("account_id")
+  cardId           String?   @map("card_id")
+  type             TxnType
+  status           TxnStatus @default(PENDING)
+  amountCents      Int       @map("amount_cents")
+  currency         String    @default("USD")
+  merchantName     String?   @map("merchant_name")
+  merchantCategory String?   @map("merchant_category")
+  description      String?
+  referenceId      String?   @unique @map("reference_id")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  settledAt        DateTime? @map("settled_at")
+
+  account Account  @relation(fields: [accountId], references: [id])
+  card    Card?    @relation(fields: [cardId], references: [id])
+
+  @@index([accountId], name: "idx_txn_account_id")
+  @@index([cardId],    name: "idx_txn_card_id")
+  @@index([createdAt], name: "idx_txn_created_at")
+  @@map("transactions")
 }
